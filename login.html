@@ -4,167 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | BnBPlug Kenya</title>
-    
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root {
-            --primary: #2a9d8f;
-            --secondary: #264653;
-            --accent: #e9c46a;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
+            justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .auth-container {
-            width: 100%;
-            max-width: 450px;
-            margin: 0 auto;
             padding: 20px;
         }
         
-        .auth-card {
+        .login-container {
+            width: 100%;
+            max-width: 400px;
             background: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         
-        .auth-header {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        .login-header {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
             color: white;
-            padding: 30px 20px;
+            padding: 30px;
             text-align: center;
         }
         
-        .auth-tabs {
-            display: flex;
-            background: white;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .auth-tab {
-            flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: none;
-            border: none;
-            font-weight: 500;
-            color: #666;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .auth-tab.active {
-            color: var(--primary);
-            border-bottom: 3px solid var(--primary);
-        }
-        
-        .auth-body {
+        .login-body {
             padding: 30px;
         }
         
-        .auth-form {
-            display: none;
+        .form-group {
+            margin-bottom: 20px;
         }
         
-        .auth-form.active {
+        .form-group label {
             display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
         }
         
-        .form-control {
-            padding: 12px 15px;
+        .form-group input {
+            width: 100%;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 15px;
-            transition: border 0.3s;
+            font-size: 16px;
+            color: #333;
+            background: #f8f9fa;
         }
         
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.1);
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a9d8f;
+            background: white;
         }
         
-        .btn-auth {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
             color: white;
             border: none;
-            padding: 12px;
             border-radius: 8px;
-            width: 100%;
+            font-size: 16px;
             font-weight: 500;
             cursor: pointer;
             transition: transform 0.3s;
         }
         
-        .btn-auth:hover {
+        .btn-login:hover {
             transform: translateY(-2px);
         }
         
-        .password-strength {
-            height: 5px;
-            background: #eee;
-            border-radius: 5px;
-            margin: 10px 0;
-            overflow: hidden;
-        }
-        
-        .strength-bar {
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s, background 0.3s;
-        }
-        
-        .divider {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #eee;
-        }
-        
-        .divider span {
-            background: white;
-            padding: 0 15px;
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .social-login {
+        .remember-forgot {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
         
-        .btn-social {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.3s;
+        .remember-forgot label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
         }
         
-        .btn-social:hover {
-            background: #f8f9fa;
+        .forgot-password {
+            color: #2a9d8f;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .register-link a {
+            color: #2a9d8f;
+            text-decoration: none;
+            font-weight: 500;
         }
         
         .alert {
@@ -174,285 +124,233 @@
             display: none;
         }
         
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        
         .alert-error {
             background: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
         }
         
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
-        .forgot-link {
-            text-align: center;
-            margin-top: 15px;
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            color: #666;
         }
         
-        .forgot-link a {
-            color: var(--primary);
-            text-decoration: none;
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
         }
         
-        .demo-note {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 12px;
-            border-radius: 4px;
-            margin-top: 20px;
+        .divider span {
+            padding: 0 15px;
             font-size: 14px;
         }
+        
+        .demo-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #856404;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="auth-container">
-            <!-- Logo -->
-            <div class="text-center mb-4">
-                <div style="font-size: 3rem; color: var(--primary);">🏠</div>
-                <h2 class="fw-bold">BnBPlug Kenya</h2>
-                <p class="text-muted">Book unique stays across Kenya</p>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🏠 BnBPlug</h1>
+            <p>Welcome Back</p>
+        </div>
+        
+        <div class="login-body">
+            <div id="alertBox" class="alert"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="remember-forgot">
+                    <label>
+                        <input type="checkbox" id="rememberMe">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>OR</span>
             </div>
             
-            <!-- Auth Card -->
-            <div class="auth-card">
-                <div class="auth-header">
-                    <h4>Welcome to BnBPlug</h4>
-                    <p>Sign in or create an account</p>
-                </div>
-                
-                <!-- Tabs -->
-                <div class="auth-tabs">
-                    <button class="auth-tab active" data-tab="login">Login</button>
-                    <button class="auth-tab" data-tab="register">Register</button>
-                </div>
-                
-                <!-- Alert Messages -->
-                <div id="alertBox" class="alert"></div>
-                
-                <!-- Login Form -->
-                <div class="auth-body">
-                    <form id="loginForm" class="auth-form active">
-                        <div class="social-login">
-                            <button type="button" class="btn-social">
-                                <i class="fab fa-google text-danger"></i> Google
-                            </button>
-                            <button type="button" class="btn-social">
-                                <i class="fab fa-facebook text-primary"></i> Facebook
-                            </button>
-                        </div>
-                        
-                        <div class="divider">
-                            <span>or continue with email</span>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="email" class="form-control" id="loginEmail" 
-                                   placeholder="Email address" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="password" class="form-control" id="loginPassword" 
-                                   placeholder="Password" required>
-                            <div class="form-check mt-2">
-                                <input type="checkbox" class="form-check-input" id="showPassword">
-                                <label class="form-check-label" for="showPassword">Show password</label>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn-auth">
-                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
-                        </button>
-                        
-                        <div class="forgot-link">
-                            <a href="#" id="forgotPassword">Forgot your password?</a>
-                        </div>
-                    </form>
-                    
-                    <!-- Register Form -->
-                    <form id="registerForm" class="auth-form">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <input type="text" class="form-control" id="firstName" 
-                                       placeholder="First name" required>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <input type="text" class="form-control" id="lastName" 
-                                       placeholder="Last name" required>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="email" class="form-control" id="registerEmail" 
-                                   placeholder="Email address" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="tel" class="form-control" id="phone" 
-                                   placeholder="Phone number (e.g., 0712 345 678)" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="password" class="form-control" id="registerPassword" 
-                                   placeholder="Password" required>
-                            <div class="password-strength">
-                                <div class="strength-bar" id="passwordStrength"></div>
-                            </div>
-                            <small id="passwordHelp" class="text-muted">Minimum 8 characters</small>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <input type="password" class="form-control" id="confirmPassword" 
-                                   placeholder="Confirm password" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">I want to:</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="userType" 
-                                       id="guest" value="guest" checked>
-                                <label class="form-check-label" for="guest">
-                                    Book properties as a guest
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="userType" 
-                                       id="host" value="host">
-                                <label class="form-check-label" for="host">
-                                    List my property as a host
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="form-check mb-3">
-                            <input class="form-check-input" type="checkbox" id="terms" required>
-                            <label class="form-check-label" for="terms">
-                                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
-                            </label>
-                        </div>
-                        
-                        <button type="submit" class="btn-auth">
-                            <i class="fas fa-user-plus me-2"></i>Create Account
-                        </button>
-                    </form>
-                    
-                    <!-- Demo Note -->
-                    <div class="demo-note">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Demo Account:</strong> Use any email to register or login.
-                        Admin features are protected.
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Back to Home -->
-            <div class="text-center mt-4">
-                <a href="index.html" class="text-decoration-none text-primary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Homepage
+            <div style="text-align: center;">
+                <a href="register.html" class="btn-login" style="background: #4CAF50; margin-bottom: 10px;">
+                    <i class="fas fa-user-plus"></i> Create New Account
                 </a>
+            </div>
+            
+            <div class="register-link">
+                Don't have an account? <a href="register.html">Sign Up</a>
+            </div>
+            
+            <!-- Demo info for testing -->
+            <div class="demo-info">
+                <strong><i class="fas fa-info-circle"></i> Demo Accounts:</strong><br>
+                • <strong>Guest:</strong> guest@example.com / password123<br>
+                • <strong>Host:</strong> host@example.com / password123<br>
+                • <strong>Admin:</strong> Contact support for admin access
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/auth.js"></script>
-    
     <script>
-        // Tab switching
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const tabId = this.dataset.tab;
-                
-                // Update active tab
-                document.querySelectorAll('.auth-tab').forEach(t => {
-                    t.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // Show corresponding form
-                document.querySelectorAll('.auth-form').forEach(form => {
-                    form.classList.remove('active');
-                });
-                document.getElementById(tabId + 'Form').classList.add('active');
-                
-                // Clear alerts
-                document.getElementById('alertBox').style.display = 'none';
-            });
-        });
-        
-        // Show/hide password
-        document.getElementById('showPassword')?.addEventListener('change', function() {
-            const passwordInput = document.getElementById('loginPassword');
-            if (passwordInput) {
-                passwordInput.type = this.checked ? 'text' : 'password';
-            }
-        });
-        
-        // Password strength indicator
-        document.getElementById('registerPassword')?.addEventListener('input', function() {
-            const password = this.value;
-            const strengthBar = document.getElementById('passwordStrength');
-            const helpText = document.getElementById('passwordHelp');
-            
-            if (!strengthBar) return;
-            
-            let strength = 0;
-            let color = '#dc3545';
-            let text = 'Very weak';
-            
-            if (password.length >= 8) strength++;
-            if (/[a-z]/.test(password)) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^a-zA-Z0-9]/.test(password)) strength++;
-            
-            switch(strength) {
-                case 0:
-                case 1:
-                    color = '#dc3545';
-                    text = 'Very weak';
-                    break;
-                case 2:
-                    color = '#fd7e14';
-                    text = 'Weak';
-                    break;
-                case 3:
-                    color = '#ffc107';
-                    text = 'Fair';
-                    break;
-                case 4:
-                    color = '#20c997';
-                    text = 'Good';
-                    break;
-                case 5:
-                    color = '#198754';
-                    text = 'Strong';
-                    break;
-            }
-            
-            strengthBar.style.width = (strength * 20) + '%';
-            strengthBar.style.background = color;
-            
-            if (helpText) {
-                helpText.textContent = `Password strength: ${text}`;
-                helpText.style.color = color;
-            }
-        });
-        
-        // Forgot password
-        document.getElementById('forgotPassword')?.addEventListener('click', function(e) {
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            showAlert('Password reset feature coming soon! Enter your registered email to receive reset instructions.', 'info');
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Validation
+            if (!email || !password) {
+                showAlert('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showAlert('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Find user in database
+            const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+            const user = users.find(u => u.email === email && atob(u.password) === password);
+            
+            if (!user) {
+                showAlert('Invalid email or password', 'error');
+                return;
+            }
+            
+            if (user.status !== 'active') {
+                showAlert('Account is not active. Please contact support.', 'error');
+                return;
+            }
+            
+            // Save current session
+            localStorage.setItem('bnbplug_user', JSON.stringify(user));
+            localStorage.setItem('bnbplug_token', 'token_' + Date.now());
+            
+            // Save to remember me
+            if (rememberMe) {
+                localStorage.setItem('bnbplug_remember', email);
+            } else {
+                localStorage.removeItem('bnbplug_remember');
+            }
+            
+            // Show success message
+            showAlert(`Welcome back, ${user.name}!`, 'success');
+            
+            // Redirect based on user type
+            setTimeout(() => {
+                if (user.isAdmin) {
+                    window.location.href = 'admin.html';
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
+            }, 1500);
         });
+        
+        // Helper functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showAlert(message, type) {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Auto-fill remember me email
+        window.onload = function() {
+            const rememberedEmail = localStorage.getItem('bnbplug_remember');
+            if (rememberedEmail) {
+                document.getElementById('email').value = rememberedEmail;
+                document.getElementById('rememberMe').checked = true;
+            }
+            
+            // Check if demo users exist, if not create them
+            setupDemoUsers();
+        };
+        
+        function setupDemoUsers() {
+            const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+            
+            // Demo guest user
+            if (!users.some(u => u.email === 'guest@example.com')) {
+                users.push({
+                    id: 'demo_guest',
+                    name: 'Demo Guest',
+                    email: 'guest@example.com',
+                    phone: '0712 345 678',
+                    password: btoa('password123'),
+                    type: 'guest',
+                    location: 'nairobi',
+                    isAdmin: false,
+                    avatar: 'https://ui-avatars.com/api/?name=Demo+Guest&background=2a9d8f&color=fff',
+                    joined: new Date().toISOString(),
+                    status: 'active'
+                });
+            }
+            
+            // Demo host user
+            if (!users.some(u => u.email === 'host@example.com')) {
+                users.push({
+                    id: 'demo_host',
+                    name: 'Demo Host',
+                    email: 'host@example.com',
+                    phone: '0723 456 789',
+                    password: btoa('password123'),
+                    type: 'host',
+                    location: 'mombasa',
+                    isAdmin: false,
+                    avatar: 'https://ui-avatars.com/api/?name=Demo+Host&background=e9c46a&color=000',
+                    joined: new Date().toISOString(),
+                    status: 'active'
+                });
+            }
+            
+            localStorage.setItem('bnbplug_users', JSON.stringify(users));
+        }
     </script>
 </body>
 </html>

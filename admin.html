@@ -1,137 +1,755 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Panel | BnBPlug</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | BnBPlug Kenya</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
-        .alert-success { background: #d4edda; color: #155724; }
-        .alert-error { background: #f8d7da; color: #721c24; }
-        .btn { background: #2a9d8f; color: white; padding: 10px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px; }
+        :root {
+            --primary: #2a9d8f;
+            --secondary: #264653;
+            --admin: #ff6b6b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .admin-header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.2);
+        }
+        
+        .admin-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .admin-header p {
+            opacity: 0.9;
+        }
+        
+        .access-denied {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        
+        .access-denied i {
+            font-size: 72px;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .admin-card {
+            background: #16213e;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .admin-card h3 {
+            color: var(--admin);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .admin-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .btn-admin {
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            text-align: left;
+            transition: all 0.3s;
+        }
+        
+        .btn-admin:hover {
+            background: rgba(255,107,107,0.2);
+            border-color: var(--admin);
+        }
+        
+        .admin-section {
+            margin-bottom: 30px;
+        }
+        
+        .admin-section h2 {
+            color: white;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--admin);
+        }
+        
+        .user-list, .property-list, .booking-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .user-item, .property-item, .booking-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info h4, .property-info h4, .booking-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .user-info p, .property-info p, .booking-info p {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .user-badge, .property-badge, .booking-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-guest {
+            background: #2a9d8f;
+            color: white;
+        }
+        
+        .badge-host {
+            background: #e9c46a;
+            color: #000;
+        }
+        
+        .badge-admin {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .badge-active {
+            background: #198754;
+            color: white;
+        }
+        
+        .badge-pending {
+            background: #ffc107;
+            color: #000;
+        }
+        
+        .badge-suspended {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .admin-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #aaa;
+            font-size: 14px;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content h3 {
+            color: var(--admin);
+            margin-bottom: 20px;
+        }
+        
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .btn-save {
+            background: var(--admin);
+            color: white;
+        }
+        
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <h1>🏠 BnBPlug Admin Panel</h1>
-    
-    <div id="authCheck">
-        <p>Checking admin access...</p>
+    <!-- Access Denied Screen -->
+    <div id="accessDenied" class="access-denied" style="display: none;">
+        <i class="fas fa-ban"></i>
+        <h1>Access Denied</h1>
+        <p>Administrator access required</p>
+        <p style="margin-top: 20px;">
+            <a href="dashboard.html" style="color: #2a9d8f; text-decoration: none;">← Back to Dashboard</a>
+        </p>
     </div>
     
-    <div id="adminContent" style="display: none;">
-        <h2>Welcome, Administrator!</h2>
-        
-        <div class="alert alert-success">
-            ✅ You have full admin access to manage the platform.
+    <!-- Admin Panel (shown only for admins) -->
+    <div id="adminPanel" class="admin-container" style="display: none;">
+        <!-- Header -->
+        <div class="admin-header">
+            <h1><i class="fas fa-user-shield"></i> Administrator Panel</h1>
+            <p>Full system control and management</p>
+            <p style="margin-top: 10px; font-size: 14px; opacity: 0.7;">
+                Logged in as: <span id="adminEmail">admin@bnbplug.co.ke</span>
+            </p>
         </div>
         
-        <h3>Quick Actions:</h3>
-        <div>
-            <a href="#" class="btn" onclick="manageProperties()">📋 Manage Properties</a>
-            <a href="#" class="btn" onclick="viewBookings()">📊 View All Bookings</a>
-            <a href="#" class="btn" onclick="manageUsers()">👥 Manage Users</a>
-            <a href="dashboard.html" class="btn">📱 User Dashboard</a>
+        <!-- Quick Stats -->
+        <div class="admin-grid">
+            <div class="admin-card">
+                <h3><i class="fas fa-chart-bar"></i> Overview</h3>
+                <div class="admin-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">Total Users</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalProperties">0</div>
+                        <div class="stat-label">Properties</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalBookings">0</div>
+                        <div class="stat-label">Bookings</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalRevenue">Ksh 0</div>
+                        <div class="stat-label">Revenue</div>
+                    </div>
+                </div>
+                <div class="admin-actions">
+                    <button class="btn-admin" onclick="refreshStats()">
+                        <i class="fas fa-sync-alt"></i> Refresh Statistics
+                    </button>
+                    <button class="btn-admin" onclick="exportData()">
+                        <i class="fas fa-download"></i> Export All Data
+                    </button>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h3><i class="fas fa-cogs"></i> System Actions</h3>
+                <div class="admin-actions">
+                    <button class="btn-admin" onclick="manageUsers()">
+                        <i class="fas fa-users"></i> Manage Users
+                    </button>
+                    <button class="btn-admin" onclick="manageProperties()">
+                        <i class="fas fa-home"></i> Manage Properties
+                    </button>
+                    <button class="btn-admin" onclick="manageBookings()">
+                        <i class="fas fa-calendar-check"></i> Manage Bookings
+                    </button>
+                    <button class="btn-admin" onclick="systemSettings()">
+                        <i class="fas fa-sliders-h"></i> System Settings
+                    </button>
+                    <button class="btn-admin" onclick="backupSystem()">
+                        <i class="fas fa-database"></i> Backup System
+                    </button>
+                </div>
+            </div>
+            
+            <div class="admin-card">
+                <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                <div class="admin-actions">
+                    <button class="btn-admin" onclick="viewLogs()">
+                        <i class="fas fa-clipboard-list"></i> View Activity Logs
+                    </button>
+                    <button class="btn-admin" onclick="manageAdmins()">
+                        <i class="fas fa-user-shield"></i> Manage Administrators
+                    </button>
+                    <button class="btn-admin" onclick="securitySettings()">
+                        <i class="fas fa-lock"></i> Security Settings
+                    </button>
+                    <button class="btn-admin" onclick="auditLog()">
+                        <i class="fas fa-search"></i> Audit Log
+                    </button>
+                </div>
+            </div>
         </div>
         
-        <div id="adminResults" style="margin-top: 20px;"></div>
+        <!-- Users Section -->
+        <div class="admin-section">
+            <h2>User Management</h2>
+            <div class="user-list" id="userList">
+                <p style="text-align: center; color: #aaa;">Loading users...</p>
+            </div>
+        </div>
+        
+        <!-- Properties Section -->
+        <div class="admin-section">
+            <h2>Property Management</h2>
+            <div class="property-list" id="propertyList">
+                <p style="text-align: center; color: #aaa;">Loading properties...</p>
+            </div>
+        </div>
+        
+        <!-- Bookings Section -->
+        <div class="admin-section">
+            <h2>Recent Bookings</h2>
+            <div class="booking-list" id="bookingList">
+                <p style="text-align: center; color: #aaa;">Loading bookings...</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="admin-footer">
+            <p>BnBPlug Admin Panel v1.0 | Secure Access Only</p>
+            <button class="logout-btn" onclick="logoutAdmin()">
+                <i class="fas fa-sign-out-alt"></i> Logout Admin
+            </button>
+        </div>
     </div>
-    
-    <div style="margin-top: 30px;">
-        <a href="index.html">← Back to Home</a> | 
-        <a href="dashboard.html">Go to Dashboard</a>
+
+    <!-- User Edit Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <h3>Edit User</h3>
+            <form id="userForm">
+                <input type="hidden" id="editUserId">
+                
+                <input type="text" id="editUserName" placeholder="Full Name" required>
+                <input type="email" id="editUserEmail" placeholder="Email" required>
+                
+                <select id="editUserType" required>
+                    <option value="guest">Guest</option>
+                    <option value="host">Host</option>
+                    <option value="admin">Administrator</option>
+                </select>
+                
+                <select id="editUserStatus" required>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+                
+                <div class="modal-buttons">
+                    <button type="submit" class="modal-btn btn-save">Save Changes</button>
+                    <button type="button" class="modal-btn btn-cancel" onclick="closeModal('userModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Check if user is admin
-        function checkAdmin() {
+        // Check admin access
+        function checkAdminAccess() {
             const userData = localStorage.getItem('bnbplug_user');
             if (!userData) {
-                document.getElementById('authCheck').innerHTML = `
-                    <div class="alert alert-error">
-                        ❌ Access denied. Please login as admin.
-                    </div>
-                    <p><a href="login.html" class="btn">Login as Admin</a></p>
-                `;
-                return false;
+                showAccessDenied();
+                return null;
             }
             
             const user = JSON.parse(userData);
             if (!user.isAdmin) {
-                document.getElementById('authCheck').innerHTML = `
-                    <div class="alert alert-error">
-                        ❌ Admin access required. Your account is not an admin.
-                    </div>
-                    <p><a href="dashboard.html" class="btn">Go to Dashboard</a></p>
-                `;
-                return false;
+                showAccessDenied();
+                return null;
             }
             
-            document.getElementById('authCheck').innerHTML = `
-                <div class="alert alert-success">
-                    ✅ Admin access verified: ${user.email}
-                </div>
-            `;
-            document.getElementById('adminContent').style.display = 'block';
-            return true;
+            return user;
         }
         
-        // Admin functions
-        function manageProperties() {
-            document.getElementById('adminResults').innerHTML = `
-                <h4>Properties Management</h4>
-                <p>Total Properties: 3</p>
-                <ul>
-                    <li>Nairobi Luxury Apartment (Active)</li>
-                    <li>Mombasa Beach House (Active)</li>
-                    <li>Nakuru Safari Lodge (Active)</li>
-                </ul>
-                <button class="btn" onclick="addProperty()">➕ Add New Property</button>
-            `;
+        // Show access denied
+        function showAccessDenied() {
+            document.getElementById('accessDenied').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
         }
         
-        function viewBookings() {
+        // Show admin panel
+        function showAdminPanel(user) {
+            document.getElementById('accessDenied').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            
+            // Update admin email
+            document.getElementById('adminEmail').textContent = user.email;
+            
+            // Load admin data
+            loadAdminData();
+        }
+        
+        // Load admin data
+        function loadAdminData() {
+            // Load users
+            const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+            document.getElementById('totalUsers').textContent = users.length;
+            displayUsers(users);
+            
+            // Load properties
+            const properties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
+            document.getElementById('totalProperties').textContent = properties.length;
+            displayProperties(properties);
+            
+            // Load bookings
             const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
-            document.getElementById('adminResults').innerHTML = `
-                <h4>All Bookings</h4>
-                <p>Total Bookings: ${bookings.length}</p>
-                ${bookings.map(booking => `
-                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0;">
-                        <strong>${booking.name}</strong><br>
-                        ${booking.checkin} to ${booking.checkout}<br>
-                        ${booking.guests} guests • Ksh ${booking.total}
+            document.getElementById('totalBookings').textContent = bookings.length;
+            
+            // Calculate revenue
+            const totalRevenue = bookings.reduce((sum, booking) => sum + (booking.total || 0), 0);
+            document.getElementById('totalRevenue').textContent = `Ksh ${totalRevenue.toLocaleString()}`;
+            
+            displayBookings(bookings);
+        }
+        
+        // Display users
+        function displayUsers(users) {
+            const container = document.getElementById('userList');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa;">No users found</p>';
+                return;
+            }
+            
+            let html = '';
+            users.slice(0, 10).forEach(user => {
+                html += `
+                    <div class="user-item">
+                        <div class="user-info">
+                            <h4>${user.name}</h4>
+                            <p>${user.email} • Joined ${new Date(user.joined).toLocaleDateString()}</p>
+                        </div>
+                        <div>
+                            <span class="user-badge badge-${user.isAdmin ? 'admin' : user.type}">
+                                ${user.isAdmin ? 'Admin' : user.type}
+                            </span>
+                            <span class="user-badge badge-${user.status || 'active'}">
+                                ${user.status || 'active'}
+                            </span>
+                            <button onclick="editUser('${user.id}')" style="margin-left: 10px; background: none; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
                     </div>
-                `).join('')}
-            `;
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Display properties
+        function displayProperties(properties) {
+            const container = document.getElementById('propertyList');
+            
+            if (properties.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa;">No properties found</p>';
+                return;
+            }
+            
+            let html = '';
+            properties.slice(0, 10).forEach(property => {
+                html += `
+                    <div class="property-item">
+                        <div class="property-info">
+                            <h4>${property.name}</h4>
+                            <p>${property.location} • Ksh ${property.price?.toLocaleString() || '0'}/night • Host: ${property.hostName}</p>
+                        </div>
+                        <span class="property-badge badge-${property.status || 'active'}">
+                            ${property.status || 'available'}
+                        </span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Display bookings
+        function displayBookings(bookings) {
+            const container = document.getElementById('bookingList');
+            
+            if (bookings.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #aaa;">No bookings found</p>';
+                return;
+            }
+            
+            let html = '';
+            bookings.slice(0, 10).forEach(booking => {
+                html += `
+                    <div class="booking-item">
+                        <div class="booking-info">
+                            <h4>${booking.propertyName || 'Property'}</h4>
+                            <p>${booking.userName} • ${booking.checkin} to ${booking.checkout}</p>
+                        </div>
+                        <div>
+                            <span class="booking-badge badge-${booking.status || 'confirmed'}">
+                                ${booking.status || 'confirmed'}
+                            </span>
+                            <span style="margin-left: 10px; color: #2a9d8f;">
+                                Ksh ${booking.total?.toLocaleString() || '0'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Edit user
+        function editUser(userId) {
+            const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+            const user = users.find(u => u.id === userId);
+            
+            if (!user) return;
+            
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUserName').value = user.name;
+            document.getElementById('editUserEmail').value = user.email;
+            document.getElementById('editUserType').value = user.isAdmin ? 'admin' : user.type;
+            document.getElementById('editUserStatus').value = user.status || 'active';
+            
+            openModal('userModal');
+        }
+        
+        // Handle user form submission
+        document.getElementById('userForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userId = document.getElementById('editUserId').value;
+            const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+            const userIndex = users.findIndex(u => u.id === userId);
+            
+            if (userIndex !== -1) {
+                users[userIndex].name = document.getElementById('editUserName').value;
+                users[userIndex].email = document.getElementById('editUserEmail').value;
+                
+                const type = document.getElementById('editUserType').value;
+                users[userIndex].type = type === 'admin' ? 'guest' : type;
+                users[userIndex].isAdmin = type === 'admin';
+                
+                users[userIndex].status = document.getElementById('editUserStatus').value;
+                
+                localStorage.setItem('bnbplug_users', JSON.stringify(users));
+                
+                // Also update current user if it's the same user
+                const currentUser = JSON.parse(localStorage.getItem('bnbplug_user') || '{}');
+                if (currentUser.id === userId) {
+                    localStorage.setItem('bnbplug_user', JSON.stringify(users[userIndex]));
+                }
+                
+                alert('User updated successfully!');
+                closeModal('userModal');
+                loadAdminData();
+            }
+        });
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Admin actions
+        function refreshStats() {
+            loadAdminData();
+            alert('Statistics refreshed!');
+        }
+        
+        function exportData() {
+            const data = {
+                users: JSON.parse(localStorage.getItem('bnbplug_users') || '[]'),
+                properties: JSON.parse(localStorage.getItem('bnbplug_properties') || '[]'),
+                bookings: JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]')
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `bnbplug-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported successfully!');
         }
         
         function manageUsers() {
-            document.getElementById('adminResults').innerHTML = `
-                <h4>Users Management</h4>
-                <p>Total Users: 2</p>
-                <ul>
-                    <li>admin@bnbplug.co.ke (Administrator)</li>
-                    <li>user@example.com (Guest)</li>
-                </ul>
-            `;
+            alert('Opening user management...');
         }
         
-        function addProperty() {
-            document.getElementById('adminResults').innerHTML += `
-                <div style="background: #f8f9fa; padding: 15px; margin-top: 10px;">
-                    <h5>Add New Property</h5>
-                    <input type="text" placeholder="Property Name" id="propName"><br>
-                    <input type="text" placeholder="Location" id="propLocation"><br>
-                    <input type="number" placeholder="Price" id="propPrice"><br>
-                    <button class="btn" onclick="saveProperty()">Save Property</button>
-                </div>
-            `;
+        function manageProperties() {
+            alert('Opening property management...');
         }
         
-        function saveProperty() {
-            alert('Property saved! (This would connect to backend in production)');
+        function manageBookings() {
+            alert('Opening booking management...');
         }
         
-        // Check admin on page load
-        document.addEventListener('DOMContentLoaded', checkAdmin);
+        function systemSettings() {
+            alert('Opening system settings...');
+        }
+        
+        function backupSystem() {
+            alert('Creating system backup...');
+        }
+        
+        function viewLogs() {
+            alert('Viewing activity logs...');
+        }
+        
+        function manageAdmins() {
+            alert('Managing administrators...');
+        }
+        
+        function securitySettings() {
+            alert('Opening security settings...');
+        }
+        
+        function auditLog() {
+            alert('Viewing audit log...');
+        }
+        
+        // Logout admin
+        function logoutAdmin() {
+            if (confirm('Logout from admin panel?')) {
+                localStorage.removeItem('bnbplug_user');
+                localStorage.removeItem('bnbplug_token');
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            const admin = checkAdminAccess();
+            if (admin) {
+                showAdminPanel(admin);
+            }
+            
+            // Close modal when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
