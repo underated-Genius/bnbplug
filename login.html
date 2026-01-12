@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | BnBPlug Kenya</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .auth-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .auth-body {
+            padding: 2rem;
+            background: white;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .btn-login {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            width: 100%;
+            font-weight: 500;
+            transition: transform 0.3s;
+        }
+        
+        .btn-login:hover {
+            transform: translateY(-2px);
+        }
+        
+        .admin-access {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(42, 157, 143, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #2a9d8f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <!-- Logo -->
+            <div class="text-center mb-4">
+                <div style="font-size: 3rem;">🏠</div>
+                <h2 class="fw-bold">BnBPlug</h2>
+                <p class="text-muted">Kenya's Premier BnB Platform</p>
+            </div>
+            
+            <!-- Login Card -->
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h4>Welcome Back</h4>
+                    <p>Sign in to your account</p>
+                </div>
+                
+                <div class="auth-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="loginEmail" 
+                                   placeholder="you@example.com" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-control" id="loginPassword" 
+                                   placeholder="Enter password" required>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="showPassword">
+                            <label class="form-check-label" for="showPassword">
+                                Show Password
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-login mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+                        
+                        <div class="text-center">
+                            <a href="#" id="forgotPassword" class="text-primary">Forgot password?</a>
+                        </div>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Register Link -->
+                    <div class="text-center">
+                        <p class="mb-2">Don't have an account?</p>
+                        <a href="#" id="switchToLogin" class="btn btn-outline-primary">
+                            <i class="fas fa-user-plus me-2"></i>Create Account
+                        </a>
+                    </div>
+                    
+                    <!-- Admin Access -->
+                    <div class="admin-access">
+                        <p class="mb-2"><strong>Admin Access</strong></p>
+                        <button id="adminLogin" class="btn btn-sm btn-warning">
+                            <i class="fas fa-user-shield me-1"></i>Quick Admin Login
+                        </button>
+                        <p class="small text-muted mt-2 mb-0">
+                            For testing purposes only
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Back to Home -->
+            <div class="text-center mt-4">
+                <a href="index.html" class="text-decoration-none">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

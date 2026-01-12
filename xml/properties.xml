@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <!-- Nairobi Properties -->
+    <property id="1">
+        <title>Luxury Apartment in Westlands</title>
+        <description>Beautiful 2-bedroom apartment in the heart of Westlands, Nairobi. Perfect for business travelers and tourists. Features modern amenities and stunning city views.</description>
+        <location>Westlands, Nairobi</location>
+        <city>nairobi</city>
+        <price>8500</price>
+        <type>apartment</type>
+        <rating>4.8</rating>
+        <reviews>24</reviews>
+        <guests>4</guests>
+        <bedrooms>2</bedrooms>
+        <beds>3</beds>
+        <bathrooms>2</bathrooms>
+        <host>
+            <name>John Mwangi</name>
+            <avatar>https://ui-avatars.com/api/?name=John+MW&background=2a9d8f&color=fff</avatar>
+            <since>2019</since>
+            <superhost>true</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80</image>
+            <image>https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=800&q=80</image>
+            <image>https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>WiFi</amenity>
+            <amenity>Kitchen</amenity>
+            <amenity>TV</amenity>
+            <amenity>AC</amenity>
+            <amenity>Parking</amenity>
+            <amenity>Pool</amenity>
+        </amenities>
+        <highlights>
+            <highlight>City Center</highlight>
+            <highlight>Secure Parking</highlight>
+            <highlight>24/7 Security</highlight>
+        </highlights>
+        <reviews_list>
+            <review>
+                <user>Sarah K.</user>
+                <rating>5</rating>
+                <comment>Amazing location and very clean apartment!</comment>
+                <date>2024-03-15</date>
+            </review>
+            <review>
+                <user>David L.</user>
+                <rating>4</rating>
+                <comment>Great value for money. Host was very responsive.</comment>
+                <date>2024-02-28</date>
+            </review>
+        </reviews_list>
+        <featured>true</featured>
+        <status>available</status>
+    </property>
+
+    <!-- Mombasa Beach House -->
+    <property id="2">
+        <title>Beachfront Villa in Nyali</title>
+        <description>Stunning beachfront villa with direct access to the beach. Perfect for families and groups. Features private pool, garden, and ocean views.</description>
+        <location>Nyali, Mombasa</location>
+        <city>mombasa</city>
+        <price>12000</price>
+        <type>villa</type>
+        <rating>4.9</rating>
+        <reviews>18</reviews>
+        <guests>6</guests>
+        <bedrooms>3</bedrooms>
+        <beds>4</beds>
+        <bathrooms>3</bathrooms>
+        <host>
+            <name>Ahmed Ali</name>
+            <avatar>https://ui-avatars.com/api/?name=Ahmed+AL&background=264653&color=fff</avatar>
+            <since>2018</since>
+            <superhost>true</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80</image>
+            <image>https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>Private Pool</amenity>
+            <amenity>Beach Access</amenity>
+            <amenity>Full Kitchen</amenity>
+            <amenity>WiFi</amenity>
+            <amenity>BBQ Area</amenity>
+            <amenity>Garden</amenity>
+        </amenities>
+        <highlights>
+            <highlight>Beachfront</highlight>
+            <highlight>Private Pool</highlight>
+            <highlight>Family Friendly</highlight>
+        </highlights>
+        <reviews_list>
+            <review>
+                <user>Maria W.</user>
+                <rating>5</rating>
+                <comment>Absolutely paradise! The beach access was incredible.</comment>
+                <date>2024-04-10</date>
+            </review>
+        </reviews_list>
+        <featured>true</featured>
+        <status>available</status>
+    </property>
+
+    <!-- Nakuru Safari Lodge -->
+    <property id="3">
+        <title>Luxury Safari Lodge near Lake Nakuru</title>
+        <description>Experience the wild in comfort. This luxury lodge offers stunning views of Lake Nakuru and is minutes from the national park entrance.</description>
+        <location>Lake Nakuru</location>
+        <city>nakuru</city>
+        <price>15000</price>
+        <type>safari</type>
+        <rating>4.7</rating>
+        <reviews>32</reviews>
+        <guests>8</guests>
+        <bedrooms>4</bedrooms>
+        <beds>6</beds>
+        <bathrooms>4</bathrooms>
+        <host>
+            <name>Conservation Lodge</name>
+            <avatar>https://ui-avatars.com/api/?name=Conservation&background=e9c46a&color=000</avatar>
+            <since>2015</since>
+            <superhost>true</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80</image>
+            <image>https://images.unsplash.com/photo-1536152470836-b943b246224c?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>Game Drives</amenity>
+            <amenity>Spa</amenity>
+            <amenity>Restaurant</amenity>
+            <amenity>Bar</amenity>
+            <amenity>Guided Tours</amenity>
+            <amenity>Fireplace</amenity>
+        </amenities>
+        <highlights>
+            <highlight>Safari Experience</highlight>
+            <highlight>Lake Views</highlight>
+            <highlight>All Inclusive</highlight>
+        </highlights>
+        <featured>true</featured>
+        <status>available</status>
+    </property>
+
+    <!-- Kisumu Lakeview House -->
+    <property id="4">
+        <title>Modern House with Lake Victoria Views</title>
+        <description>Beautiful modern house overlooking Lake Victoria. Perfect for relaxing getaways with family or friends. Features large balcony and garden.</description>
+        <location>Milimani, Kisumu</location>
+        <city>kisumu</city>
+        <price>9500</price>
+        <type>house</type>
+        <rating>4.6</rating>
+        <reviews>15</reviews>
+        <guests>5</guests>
+        <bedrooms>3</bedrooms>
+        <beds>4</beds>
+        <bathrooms>2</bathrooms>
+        <host>
+            <name>Grace Omondi</name>
+            <avatar>https://ui-avatars.com/api/?name=Grace+OM&background=2a9d8f&color=fff</avatar>
+            <since>2020</since>
+            <superhost>false</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80</image>
+            <image>https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>Lake View</amenity>
+            <amenity>Balcony</amenity>
+            <amenity>Garden</amenity>
+            <amenity>WiFi</amenity>
+            <amenity>Kitchen</amenity>
+            <amenity>Parking</amenity>
+        </amenities>
+        <highlights>
+            <highlight>Lake Views</highlight>
+            <highlight>Quiet Neighborhood</highlight>
+            <highlight>Spacious Garden</highlight>
+        </highlights>
+        <featured>true</featured>
+        <status>available</status>
+    </property>
+
+    <!-- Eldoret Cottage -->
+    <property id="5">
+        <title>Cozy Cottage in Eldoret</title>
+        <description>Charming cottage perfect for couples or solo travelers. Located in a quiet neighborhood with easy access to town center.</description>
+        <location>Eldoret Town</location>
+        <city>eldoret</city>
+        <price>6500</price>
+        <type>cabin</type>
+        <rating>4.5</rating>
+        <reviews>8</reviews>
+        <guests>2</guests>
+        <bedrooms>1</bedrooms>
+        <beds>1</beds>
+        <bathrooms>1</bathrooms>
+        <host>
+            <name>Peter Kiptoo</name>
+            <avatar>https://ui-avatars.com/api/?name=Peter+KT&background=264653&color=fff</avatar>
+            <since>2021</since>
+            <superhost>false</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1444201983204-c43cbd584d93?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>WiFi</amenity>
+            <amenity>Kitchenette</amenity>
+            <amenity>TV</amenity>
+            <amenity>Garden</amenity>
+        </amenities>
+        <highlights>
+            <highlight>Cozy Space</highlight>
+            <highlight>Affordable</highlight>
+            <highlight>Central Location</highlight>
+        </highlights>
+        <featured>false</featured>
+        <status>available</status>
+    </property>
+
+    <!-- Malindi Beach Apartment -->
+    <property id="6">
+        <title>Beach Apartment in Malindi</title>
+        <description>Modern apartment steps away from Malindi Beach. Features rooftop terrace with ocean views and modern amenities.</description>
+        <location>Malindi Beach</location>
+        <city>malindi</city>
+        <price>11000</price>
+        <type>apartment</type>
+        <rating>4.8</rating>
+        <reviews>12</reviews>
+        <guests>4</guests>
+        <bedrooms>2</bedrooms>
+        <beds>3</beds>
+        <bathrooms>2</bathrooms>
+        <host>
+            <name>Beach Properties</name>
+            <avatar>https://ui-avatars.com/api/?name=Beach+Props&background=e9c46a&color=000</avatar>
+            <since>2017</since>
+            <superhost>true</superhost>
+        </host>
+        <images>
+            <image>https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80</image>
+        </images>
+        <amenities>
+            <amenity>Beach Access</amenity>
+            <amenity>Rooftop Terrace</amenity>
+            <amenity>WiFi</amenity>
+            <amenity>AC</amenity>
+            <amenity>Parking</amenity>
+            <amenity>Pool</amenity>
+        </amenities>
+        <highlights>
+            <highlight>Ocean Views</highlight>
+            <highlight>Rooftop Terrace</highlight>
+            <highlight>Beach Access</highlight>
+        </highlights>
+        <featured>true</featured>
+        <status>available</status>
+    </property>
+</properties>

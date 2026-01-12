@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse premium BnB properties across Kenya - Nairobi, Mombasa, Nakuru, Kisumu, and more.">
+    <title>Properties | BnBPlug Kenya</title>
+    
+    <!-- Same head content as index.html -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+</head>
+<body>
+    <!-- Navigation (same as index.html) -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <div class="logo-container">
+                    <div class="logo-icon">🏠</div>
+                    <div class="logo-text">
+                        <span class="logo-main">BnBPlug</span>
+                        <span class="logo-sub">Kenya</span>
+                    </div>
+                </div>
+            </a>
+            
+            <div class="d-none d-lg-flex window-controls">
+                <button class="window-btn window-back" id="windowBack" title="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="window-btn window-minimize" id="windowMinimize" title="Minimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+                <button class="window-btn window-close" id="windowClose" title="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="properties.html">
+                            <i class="fas fa-building me-1"></i>Properties
+                        </a>
+                    </li>
+                    <!-- Rest same as index -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== PROPERTIES HEADER ===== -->
+    <section class="page-header properties-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h1 class="display-4 fw-bold text-white mb-4">Discover Amazing Stays</h1>
+                    <p class="lead text-white mb-4">Find the perfect BnB across Kenya's top destinations</p>
+                    
+                    <!-- Search & Filters -->
+                    <div class="search-filters glassmorphism p-4">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="locationFilter">
+                                        <option value="">All Locations</option>
+                                        <option value="nairobi">Nairobi</option>
+                                        <option value="mombasa">Mombasa</option>
+                                        <option value="nakuru">Nakuru</option>
+                                        <option value="kisumu">Kisumu</option>
+                                        <option value="eldoret">Eldoret</option>
+                                        <option value="malindi">Malindi</option>
+                                    </select>
+                                    <label for="locationFilter"><i class="fas fa-map-marker-alt me-2"></i>Location</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="checkinDate">
+                                    <label for="checkinDate"><i class="fas fa-calendar-day me-2"></i>Check-in</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="checkoutDate">
+                                    <label for="checkoutDate"><i class="fas fa-calendar-day me-2"></i>Check-out</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="guestsFilter">
+                                        <option value="1">1 Guest</option>
+                                        <option value="2" selected>2 Guests</option>
+                                        <option value="3">3 Guests</option>
+                                        <option value="4">4 Guests</option>
+                                        <option value="5">5+ Guests</option>
+                                    </select>
+                                    <label for="guestsFilter"><i class="fas fa-user-friends me-2"></i>Guests</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="priceFilter">
+                                        <option value="">Price Range</option>
+                                        <option value="0-5000">Under Ksh 5,000</option>
+                                        <option value="5000-10000">Ksh 5,000 - 10,000</option>
+                                        <option value="10000-20000">Ksh 10,000 - 20,000</option>
+                                        <option value="20000+">Over Ksh 20,000</option>
+                                    </select>
+                                    <label for="priceFilter"><i class="fas fa-money-bill-wave me-2"></i>Price Range</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <select class="form-select" id="typeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="apartment">Apartment</option>
+                                        <option value="house">Entire House</option>
+                                        <option value="villa">Villa</option>
+                                        <option value="cabin">Cabin</option>
+                                        <option value="safari">Safari Lodge</option>
+                                        <option value="beach">Beach House</option>
+                                    </select>
+                                    <label for="typeFilter"><i class="fas fa-home me-2"></i>Property Type</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary btn-lg px-5" id="applyFilters">
+                                <i class="fas fa-search me-2"></i>Search Properties
+                            </button>
+                            <button class="btn btn-outline-light btn-lg px-5 ms-2" id="resetFilters">
+                                <i class="fas fa-redo me-2"></i>Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PROPERTIES GRID ===== -->
+    <section class="properties-grid py-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h3 class="fw-bold"><span id="propertyCount">0</span> Properties Found</h3>
+                    <p class="text-muted">Showing available properties matching your criteria</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="sort-options">
+                        <select class="form-select w-auto d-inline-block" id="sortOptions">
+                            <option value="featured">Sort: Featured</option>
+                            <option value="price_low">Price: Low to High</option>
+                            <option value="price_high">Price: High to Low</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="newest">Newest First</option>
+                        </select>
+                        <div class="btn-group ms-3" role="group">
+                            <button type="button" class="btn btn-outline-primary active" id="viewGrid">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="viewList">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" id="propertiesContainer">
+                <!-- Properties loaded from XML -->
+            </div>
+            
+            <!-- Pagination -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <!-- Dynamic pagination -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading properties...</p>
+    </div>
+
+    <!-- Footer (same as index.html) -->
+    <footer class="footer bg-dark text-white py-5">
+        <!-- Same footer as index -->
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/properties.js"></script>
+</body>
+</html>
