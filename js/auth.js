@@ -1,257 +1,355 @@
 // BnBPlug Authentication System
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('BnBPlug Auth System loaded');
+    console.log('Authentication system loaded');
     
-    // Check if user is already logged in
-    checkExistingSession();
+    // Elements
+    const loginTabBtn = document.getElementById('loginTabBtn');
+    const registerTabBtn = document.getElementById('registerTabBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginFormData = document.getElementById('loginFormData');
+    const registerFormData = document.getElementById('registerFormData');
+    const userTypeBtns = document.querySelectorAll('.user-type-btn');
+    const userTypeInput = document.getElementById('userType');
+    const showAdminLogin = document.getElementById('showAdminLogin');
+    const adminLoginSection = document.getElementById('adminLoginSection');
+    const adminLoginBtn = document.getElementById('adminLoginBtn');
+    const showLoginPassword = document.getElementById('showLoginPassword');
+    const registerPassword = document.getElementById('registerPassword');
+    const passwordStrengthText = document.getElementById('passwordStrengthText');
+    const authMessage = document.getElementById('authMessage');
     
-    // Initialize forms
-    initLoginForm();
-    initRegisterForm();
+    // Initialize
+    initAuth();
     
-    function checkExistingSession() {
+    function initAuth() {
+        // Check if user is already logged in
         const user = localStorage.getItem('bnbplug_user');
-        const token = localStorage.getItem('bnbplug_token');
+        if (user) {
+            const userData = JSON.parse(user);
+            if (window.location.pathname.includes('login.html')) {
+                window.location.href = userData.isAdmin ? 'admin.html' : 'dashboard.html';
+            }
+        }
         
-        if (user && token && window.location.pathname.includes('login.html')) {
-            // User is already logged in, redirect to dashboard
-            showAlert('You are already logged in!', 'info');
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
+        // Tab switching
+        if (loginTabBtn) {
+            loginTabBtn.addEventListener('click', function() {
+                switchTab('login');
+            });
+        }
+        
+        if (registerTabBtn) {
+            registerTabBtn.addEventListener('click', function() {
+                switchTab('register');
+            });
+        }
+        
+        // User type selection
+        userTypeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                userTypeBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                userTypeInput.value = this.dataset.type;
+            });
+        });
+        
+        // Login form submission
+        if (loginFormData) {
+            loginFormData.addEventListener('submit', handleLogin);
+        }
+        
+        // Register form submission
+        if (registerFormData) {
+            registerFormData.addEventListener('submit', handleRegister);
+        }
+        
+        // Show password toggle
+        if (showLoginPassword) {
+            showLoginPassword.addEventListener('change', function() {
+                const passwordInput = document.getElementById('loginPassword');
+                passwordInput.type = this.checked ? 'text' : 'password';
+            });
+        }
+        
+        // Show admin login section
+        if (showAdminLogin) {
+            showAdminLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                adminLoginSection.classList.toggle('hidden');
+            });
+        }
+        
+        // Admin login button
+        if (adminLoginBtn) {
+            adminLoginBtn.addEventListener('click', handleAdminLogin);
+        }
+        
+        // Password strength checker
+        if (registerPassword) {
+            registerPassword.addEventListener('input', checkPasswordStrength);
+        }
+        
+        // Check URL parameters for registration
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('action') === 'register') {
+            switchTab('register');
         }
     }
     
-    function initLoginForm() {
-        const loginForm = document.getElementById('loginForm');
-        if (!loginForm) return;
+    function switchTab(tabName) {
+        // Update tabs
+        loginTabBtn.classList.toggle('active', tabName === 'login');
+        registerTabBtn.classList.toggle('active', tabName === 'register');
         
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            
-            // Validation
-            if (!email || !password) {
-                showAlert('Please fill in all fields', 'error');
-                return;
-            }
-            
-            if (!validateEmail(email)) {
-                showAlert('Please enter a valid email address', 'error');
-                return;
-            }
-            
-            // Show loading
-            showLoading('Signing in...');
-            
-            // Simulate API call delay
-            setTimeout(() => {
-                handleLogin(email, password);
-                hideLoading();
-            }, 1000);
-        });
+        // Show/hide forms
+        loginForm.classList.toggle('hidden', tabName !== 'login');
+        registerForm.classList.toggle('hidden', tabName !== 'register');
+        
+        // Clear messages
+        clearMessage();
     }
     
-    function initRegisterForm() {
-        const registerForm = document.getElementById('registerForm');
-        if (!registerForm) return;
+    function handleLogin(e) {
+        e.preventDefault();
+        clearMessage();
         
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Get form values
-            const firstName = document.getElementById('firstName').value.trim();
-            const lastName = document.getElementById('lastName').value.trim();
-            const email = document.getElementById('registerEmail').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const userType = document.querySelector('input[name="userType"]:checked')?.value;
-            const terms = document.getElementById('terms').checked;
-            
-            // Validation
-            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
-                showAlert('Please fill in all required fields', 'error');
-                return;
-            }
-            
-            if (!validateEmail(email)) {
-                showAlert('Please enter a valid email address', 'error');
-                return;
-            }
-            
-            if (!validatePhone(phone)) {
-                showAlert('Please enter a valid phone number (e.g., 0712 345 678)', 'error');
-                return;
-            }
-            
-            if (password.length < 8) {
-                showAlert('Password must be at least 8 characters long', 'error');
-                return;
-            }
-            
-            if (password !== confirmPassword) {
-                showAlert('Passwords do not match', 'error');
-                return;
-            }
-            
-            if (!terms) {
-                showAlert('Please accept the Terms of Service', 'error');
-                return;
-            }
-            
-            // Check if user already exists
-            if (userExists(email)) {
-                showAlert('An account with this email already exists. Please login instead.', 'error');
-                return;
-            }
-            
-            // Show loading
-            showLoading('Creating your account...');
-            
-            // Simulate API call delay
-            setTimeout(() => {
-                handleRegistration(firstName, lastName, email, phone, password, userType);
-                hideLoading();
-            }, 1500);
-        });
-    }
-    
-    function handleLogin(email, password) {
-        // Get all users from localStorage
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // Validation
+        if (!email || !password) {
+            showMessage('Please fill in all fields', 'error');
+            return;
+        }
+        
+        if (!validateEmail(email)) {
+            showMessage('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // Get all users
         const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
         
-        // Special admin check (hidden from users)
-        if (email === 'admin@bnbplug.co.ke' && password === 'AdminSecurePass2024!') {
-            createAdminSession();
-            showAlert('Welcome back, Administrator!', 'success');
-            setTimeout(() => {
-                window.location.href = 'admin.html';
-            }, 1500);
-            return;
-        }
-        
-        // Find user by email
-        const user = users.find(u => u.email === email);
+        // Find user
+        const user = users.find(u => u.email === email && u.password === password);
         
         if (!user) {
-            showAlert('No account found with this email. Please register.', 'error');
-            return;
-        }
-        
-        // In production, this would compare hashed passwords
-        if (user.password !== password) {
-            showAlert('Incorrect password. Please try again.', 'error');
+            showMessage('Invalid email or password', 'error');
             return;
         }
         
         // Create session
-        createUserSession(user);
+        const userSession = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            phone: user.phone,
+            type: user.type,
+            isAdmin: user.isAdmin || false,
+            avatar: user.avatar,
+            joined: user.joined
+        };
         
-        showAlert(`Welcome back, ${user.firstName}!`, 'success');
+        localStorage.setItem('bnbplug_user', JSON.stringify(userSession));
+        localStorage.setItem('bnbplug_token', 'token_' + Date.now());
+        
+        showMessage('Login successful! Redirecting...', 'success');
         
         // Redirect based on user type
         setTimeout(() => {
-            if (user.type === 'host') {
-                window.location.href = 'dashboard.html?mode=host';
+            if (userSession.isAdmin) {
+                window.location.href = 'admin.html';
             } else {
                 window.location.href = 'dashboard.html';
             }
         }, 1500);
     }
     
-    function handleRegistration(firstName, lastName, email, phone, password, userType) {
-        // Create new user object
+    function handleRegister(e) {
+        e.preventDefault();
+        clearMessage();
+        
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('registerEmail').value;
+        const phone = document.getElementById('phone').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const userType = userTypeInput.value;
+        const terms = document.getElementById('terms').checked;
+        
+        // Validation
+        if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
+            showMessage('Please fill in all required fields', 'error');
+            return;
+        }
+        
+        if (!terms) {
+            showMessage('Please accept the terms and conditions', 'error');
+            return;
+        }
+        
+        if (!validateEmail(email)) {
+            showMessage('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        if (!validatePhone(phone)) {
+            showMessage('Please enter a valid Kenyan phone number (07XX XXX XXX)', 'error');
+            return;
+        }
+        
+        if (password.length < 8) {
+            showMessage('Password must be at least 8 characters', 'error');
+            return;
+        }
+        
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match', 'error');
+            return;
+        }
+        
+        // Check if email already exists
+        const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
+        if (users.find(u => u.email === email)) {
+            showMessage('Email already registered. Please login instead.', 'error');
+            return;
+        }
+        
+        // Create new user
         const newUser = {
-            id: generateUserId(),
+            id: 'user_' + Date.now(),
             firstName: firstName,
             lastName: lastName,
-            name: `${firstName} ${lastName}`,
             email: email,
             phone: phone,
-            password: password, // In production, this would be hashed
-            type: userType || 'guest',
+            password: password, // In production, this should be hashed
+            type: userType,
             isAdmin: false,
             avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + ' ' + lastName)}&background=2a9d8f&color=fff`,
             joined: new Date().toISOString(),
-            verified: false,
-            bookings: []
+            properties: userType === 'host' ? [] : null,
+            bookings: userType === 'guest' ? [] : null
         };
         
-        // Save user to database
-        saveUser(newUser);
+        // Save user
+        users.push(newUser);
+        localStorage.setItem('bnbplug_users', JSON.stringify(users));
         
         // Create session
-        createUserSession(newUser);
+        const userSession = {
+            id: newUser.id,
+            firstName: newUser.firstName,
+            lastName: newUser.lastName,
+            name: `${newUser.firstName} ${newUser.lastName}`,
+            email: newUser.email,
+            phone: newUser.phone,
+            type: newUser.type,
+            isAdmin: false,
+            avatar: newUser.avatar,
+            joined: newUser.joined
+        };
         
-        showAlert(`Welcome to BnBPlug, ${firstName}! Your account has been created.`, 'success');
+        localStorage.setItem('bnbplug_user', JSON.stringify(userSession));
+        localStorage.setItem('bnbplug_token', 'token_' + Date.now());
         
-        // Redirect
+        showMessage('Account created successfully! Redirecting to dashboard...', 'success');
+        
+        // Redirect to dashboard
         setTimeout(() => {
-            if (userType === 'host') {
-                window.location.href = 'dashboard.html?mode=host';
-            } else {
-                window.location.href = 'dashboard.html';
-            }
+            window.location.href = 'dashboard.html';
         }, 2000);
     }
     
-    function createUserSession(user) {
-        // Don't store password in session
-        const sessionUser = { ...user };
-        delete sessionUser.password;
+    function handleAdminLogin() {
+        clearMessage();
         
-        // Generate session token
-        const token = generateToken();
+        const email = document.getElementById('adminEmail').value;
+        const password = document.getElementById('adminPassword').value;
         
-        // Save to localStorage
-        localStorage.setItem('bnbplug_user', JSON.stringify(sessionUser));
-        localStorage.setItem('bnbplug_token', token);
-        localStorage.setItem('bnbplug_last_login', new Date().toISOString());
-    }
-    
-    function createAdminSession() {
-        const adminUser = {
+        // Hardcoded admin credentials (In production, this would be in a database)
+        // Default admin credentials: admin@bnbplug.co.ke / Admin@123
+        const adminCredentials = [
+            {
+                email: 'admin@bnbplug.co.ke',
+                password: 'Admin@123', // In production, use hashed password
+                name: 'System Administrator'
+            },
+            {
+                email: 'admin@example.com',
+                password: 'Admin123',
+                name: 'Demo Admin'
+            }
+        ];
+        
+        const admin = adminCredentials.find(a => a.email === email && a.password === password);
+        
+        if (!admin) {
+            showMessage('Invalid admin credentials', 'error');
+            return;
+        }
+        
+        // Create admin session
+        const adminSession = {
             id: 'admin_001',
-            firstName: 'System',
-            lastName: 'Administrator',
-            name: 'System Administrator',
-            email: 'admin@bnbplug.co.ke',
-            phone: '+254 700 000 000',
+            firstName: 'Admin',
+            lastName: 'User',
+            name: admin.name,
+            email: admin.email,
+            phone: '+254700000000',
             type: 'admin',
             isAdmin: true,
             avatar: 'https://ui-avatars.com/api/?name=Admin&background=ff6b6b&color=fff',
-            joined: '2024-01-01',
-            verified: true,
-            permissions: ['all']
+            joined: '2024-01-01'
         };
         
-        const token = 'admin_token_' + Date.now();
+        localStorage.setItem('bnbplug_user', JSON.stringify(adminSession));
+        localStorage.setItem('bnbplug_token', 'admin_token_' + Date.now());
         
-        localStorage.setItem('bnbplug_user', JSON.stringify(adminUser));
-        localStorage.setItem('bnbplug_token', token);
-        localStorage.setItem('bnbplug_last_login', new Date().toISOString());
+        showMessage('Admin login successful! Redirecting...', 'success');
+        
+        // Redirect to admin panel
+        setTimeout(() => {
+            window.location.href = 'admin.html';
+        }, 1500);
     }
     
-    function saveUser(user) {
-        const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
-        users.push(user);
-        localStorage.setItem('bnbplug_users', JSON.stringify(users));
-    }
-    
-    function userExists(email) {
-        const users = JSON.parse(localStorage.getItem('bnbplug_users') || '[]');
-        return users.some(user => user.email === email);
-    }
-    
-    function generateUserId() {
-        return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-    
-    function generateToken() {
-        return 'token_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    function checkPasswordStrength() {
+        const password = this.value;
+        const strengthText = passwordStrengthText.querySelector('span');
+        
+        if (!password) {
+            strengthText.textContent = 'Weak';
+            strengthText.className = 'strength-weak';
+            return;
+        }
+        
+        let strength = 0;
+        
+        // Length
+        if (password.length >= 8) strength++;
+        if (password.length >= 12) strength++;
+        
+        // Complexity
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^a-zA-Z0-9]/.test(password)) strength++;
+        
+        // Determine strength
+        if (strength <= 2) {
+            strengthText.textContent = 'Weak';
+            strengthText.className = 'strength-weak';
+        } else if (strength <= 4) {
+            strengthText.textContent = 'Fair';
+            strengthText.className = 'strength-fair';
+        } else {
+            strengthText.textContent = 'Strong';
+            strengthText.className = 'strength-good';
+        }
     }
     
     function validateEmail(email) {
@@ -260,97 +358,34 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function validatePhone(phone) {
-        // Kenyan phone number validation
-        const re = /^(\+?254|0)?[17]\d{8}$/;
+        const re = /^(\+?254|0)?[71]\d{8}$/;
         return re.test(phone.replace(/\s/g, ''));
     }
     
-    function showAlert(message, type = 'info') {
-        const alertBox = document.getElementById('alertBox');
-        if (!alertBox) return;
+    function showMessage(message, type = 'info') {
+        clearMessage();
         
-        alertBox.textContent = message;
-        alertBox.className = `alert alert-${type}`;
-        alertBox.style.display = 'block';
+        const alertClass = type === 'error' ? 'alert-danger' : 
+                          type === 'success' ? 'alert-success' : 'alert-info';
         
-        // Auto hide after 5 seconds
-        setTimeout(() => {
-            alertBox.style.display = 'none';
-        }, 5000);
-    }
-    
-    function showLoading(message) {
-        // Create loading overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'loadingOverlay';
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            color: white;
-        `;
-        
-        overlay.innerHTML = `
-            <div class="spinner-border text-light" style="width: 3rem; height: 3rem;">
-                <span class="visually-hidden">Loading...</span>
+        authMessage.innerHTML = `
+            <div class="alert ${alertClass} alert-dismissible fade show">
+                ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-            <p class="mt-3">${message}</p>
         `;
-        
-        document.body.appendChild(overlay);
     }
     
-    function hideLoading() {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) {
-            overlay.remove();
-        }
+    function clearMessage() {
+        authMessage.innerHTML = '';
     }
     
-    // Add some demo users if none exist
-    if (!localStorage.getItem('bnbplug_users')) {
-        const demoUsers = [
-            {
-                id: 'demo_guest_001',
-                firstName: 'John',
-                lastName: 'Doe',
-                name: 'John Doe',
-                email: 'guest@example.com',
-                phone: '+254712345678',
-                password: 'demo123',
-                type: 'guest',
-                isAdmin: false,
-                avatar: 'https://ui-avatars.com/api/?name=John+Doe&background=2a9d8f&color=fff',
-                joined: '2024-01-15',
-                verified: true,
-                bookings: []
-            },
-            {
-                id: 'demo_host_001',
-                firstName: 'Sarah',
-                lastName: 'Smith',
-                name: 'Sarah Smith',
-                email: 'host@example.com',
-                phone: '+254723456789',
-                password: 'demo123',
-                type: 'host',
-                isAdmin: false,
-                avatar: 'https://ui-avatars.com/api/?name=Sarah+Smith&background=264653&color=fff',
-                joined: '2024-02-01',
-                verified: true,
-                bookings: []
-            }
-        ];
-        
-        localStorage.setItem('bnbplug_users', JSON.stringify(demoUsers));
-        console.log('Demo users created');
-    }
+    // Make some functions globally available
+    window.authModule = {
+        validateEmail,
+        validatePhone,
+        showMessage,
+        clearMessage
+    };
 });

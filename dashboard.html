@@ -4,685 +4,465 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | BnBPlug Kenya</title>
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    
     <style>
         :root {
             --primary: #2a9d8f;
             --secondary: #264653;
-            --accent: #e9c46a;
-            --guest-color: #2a9d8f;
-            --host-color: #e9c46a;
-            --admin-color: #ff6b6b;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --guest-color: #4d96ff;
+            --host-color: #ff6b6b;
         }
         
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        .navbar {
-            background: linear-gradient(135deg, #1a2980, #26d0ce);
+        .sidebar {
+            background: linear-gradient(180deg, var(--secondary), #1a365d);
             color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 100vh;
+            padding-top: 1rem;
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .sidebar-logo {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
         }
         
-        .logo h2 {
-            color: white;
+        .sidebar-nav .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin: 0.25rem 0;
+            transition: all 0.3s;
         }
         
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            margin-left: 15px;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-        
-        .nav-links a:hover {
+        .sidebar-nav .nav-link:hover,
+        .sidebar-nav .nav-link.active {
             background: rgba(255,255,255,0.1);
-        }
-        
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        
-        .user-header {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
             color: white;
-        }
-        
-        .user-details h1 {
-            margin-bottom: 5px;
         }
         
         .user-badge {
             display: inline-block;
-            padding: 5px 12px;
+            padding: 0.25rem 0.75rem;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 0.75rem;
             font-weight: 500;
-            margin-top: 5px;
+            margin-left: 0.5rem;
         }
         
-        .badge-guest {
+        .guest-badge {
             background: var(--guest-color);
             color: white;
         }
         
-        .badge-host {
+        .host-badge {
             background: var(--host-color);
-            color: #000;
-        }
-        
-        .badge-admin {
-            background: var(--admin-color);
             color: white;
         }
         
-        .quick-actions {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn-action {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: transform 0.3s;
-        }
-        
-        .btn-action:hover {
-            transform: translateY(-2px);
-        }
-        
-        .btn-primary {
-            background: var(--primary);
+        .admin-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
             color: white;
         }
         
-        .btn-host {
-            background: var(--host-color);
-            color: #000;
+        .dashboard-header {
+            background: white;
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 2rem;
         }
         
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .card {
+        .stat-card {
             background: white;
             border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            height: 100%;
         }
         
-        .card h3 {
-            margin-bottom: 15px;
-            color: var(--secondary);
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
         
-        .card-icon {
-            font-size: 24px;
+        .guest-stat {
+            background: rgba(77, 150, 255, 0.1);
+            color: var(--guest-color);
         }
         
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+        .host-stat {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--host-color);
         }
         
-        .stat-item {
+        .action-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             text-align: center;
-            padding: 15px;
-            border-radius: 8px;
-            background: #f8f9fa;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.3s;
+            height: 100%;
         }
         
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 5px;
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
         }
         
-        .stat-label {
-            font-size: 14px;
-            color: #666;
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
         
-        .property-list {
-            margin-top: 15px;
+        .guest-action {
+            border-top: 4px solid var(--guest-color);
+        }
+        
+        .host-action {
+            border-top: 4px solid var(--host-color);
+        }
+        
+        .properties-list {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         
         .property-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
             border: 1px solid #e9ecef;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        
-        .property-info h4 {
-            margin-bottom: 5px;
-        }
-        
-        .property-status {
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 12px;
-        }
-        
-        .status-available {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        .status-booked {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .btn-add-property {
-            width: 100%;
-            padding: 12px;
-            background: var(--host-color);
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-            font-weight: 500;
-        }
-        
-        .btn-add-property:hover {
-            background: #d4b152;
-        }
-        
-        .host-features, .guest-features {
-            display: none;
-        }
-        
-        .alert {
-            padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
-            display: none;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
         }
         
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .property-item:hover {
+            border-color: var(--primary);
         }
         
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .booking-item {
+            border-left: 4px solid var(--primary);
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
         
-        .logout-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 20px;
-            width: 100%;
-        }
-        
-        .logout-btn:hover {
-            background: #ff5252;
+        .tab-content {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="logo">
-            <h2>🏠 BnBPlug Dashboard</h2>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="properties.html">Browse</a>
-            <span id="adminLink" style="display: none;">
-                <a href="admin.html">Admin Panel</a>
-            </span>
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-home me-2"></i>BnBPlug Kenya
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link" href="properties.html">Properties</a>
+                <a class="nav-link active" href="dashboard.html">Dashboard</a>
+            </div>
         </div>
     </nav>
-    
-    <!-- Dashboard Content -->
-    <div class="dashboard-container">
-        <!-- User Header -->
-        <div class="user-header">
-            <div class="user-info">
-                <div class="user-avatar" id="userAvatar">👤</div>
-                <div class="user-details">
-                    <h1 id="userName">Loading...</h1>
-                    <p id="userEmail">user@example.com</p>
-                    <span class="user-badge" id="userBadge">Guest</span>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-xl-2 sidebar d-none d-lg-block">
+                <div class="sidebar-logo">
+                    <h5>🏠 BnBPlug</h5>
                 </div>
-            </div>
-            <div class="quick-actions">
-                <button class="btn-action btn-primary" onclick="window.location.href='properties.html'">
-                    <i class="fas fa-search"></i> Find Stays
-                </button>
-                <button class="btn-action btn-host" id="hostActionBtn" style="display: none;">
-                    <i class="fas fa-plus"></i> Add Property
-                </button>
-            </div>
-        </div>
-        
-        <!-- Alert Box -->
-        <div id="alertBox" class="alert"></div>
-        
-        <!-- Dashboard Grid -->
-        <div class="dashboard-grid">
-            <!-- Overview Card -->
-            <div class="card">
-                <h3><span class="card-icon">📊</span> Overview</h3>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalBookings">0</div>
-                        <div class="stat-label">Bookings</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalProperties">0</div>
-                        <div class="stat-label">Properties</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="totalRevenue">Ksh 0</div>
-                        <div class="stat-label">Revenue</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="avgRating">0.0</div>
-                        <div class="stat-label">Rating</div>
+                
+                <!-- User Info -->
+                <div class="text-center mb-4" id="userInfo">
+                    <div class="spinner-border text-light" role="status">
+                        <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
+                
+                <!-- Navigation -->
+                <nav class="sidebar-nav">
+                    <a class="nav-link active" href="#dashboard">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </a>
+                    
+                    <!-- Guest Links -->
+                    <div id="guestLinks" style="display: none;">
+                        <a class="nav-link" href="#bookings">
+                            <i class="fas fa-calendar-check me-2"></i>My Bookings
+                        </a>
+                        <a class="nav-link" href="#wishlist">
+                            <i class="fas fa-heart me-2"></i>Wishlist
+                        </a>
+                    </div>
+                    
+                    <!-- Host Links -->
+                    <div id="hostLinks" style="display: none;">
+                        <a class="nav-link" href="#my-properties">
+                            <i class="fas fa-home me-2"></i>My Properties
+                        </a>
+                        <a class="nav-link" href="#add-property">
+                            <i class="fas fa-plus-circle me-2"></i>Add Property
+                        </a>
+                        <a class="nav-link" href="#host-bookings">
+                            <i class="fas fa-calendar-alt me-2"></i>Property Bookings
+                        </a>
+                    </div>
+                    
+                    <a class="nav-link" href="#profile">
+                        <i class="fas fa-user me-2"></i>Profile
+                    </a>
+                    
+                    <!-- Admin Link -->
+                    <a class="nav-link" href="admin.html" id="adminLink" style="display: none;">
+                        <i class="fas fa-user-shield me-2"></i>Admin Panel
+                    </a>
+                    
+                    <hr class="text-white-50 my-3">
+                    
+                    <a class="nav-link text-danger" href="#" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </nav>
             </div>
             
-            <!-- Recent Bookings (Guest/Host) -->
-            <div class="card" id="bookingsCard">
-                <h3><span class="card-icon">📅</span> Recent Bookings</h3>
-                <div id="recentBookings">
-                    <p style="text-align: center; color: #666;">No bookings yet</p>
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10">
+                <!-- Header -->
+                <div class="dashboard-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="mb-0">Dashboard</h4>
+                            <p class="text-muted mb-0" id="welcomeMessage">Welcome back!</p>
+                        </div>
+                        <div id="userBadge"></div>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Host Properties (Only for Hosts) -->
-            <div class="card host-features" id="hostPropertiesCard">
-                <h3><span class="card-icon">🏠</span> My Properties</h3>
-                <div class="property-list" id="hostPropertiesList">
-                    <p style="text-align: center; color: #666;">No properties listed yet</p>
-                </div>
-                <button class="btn-add-property" onclick="addProperty()">
-                    <i class="fas fa-plus"></i> Add New Property
-                </button>
-            </div>
-            
-            <!-- Guest Favorites (Only for Guests) -->
-            <div class="card guest-features" id="guestFavoritesCard">
-                <h3><span class="card-icon">❤️</span> Saved Properties</h3>
-                <div id="favoritesList">
-                    <p style="text-align: center; color: #666;">No saved properties</p>
+                
+                <!-- Content -->
+                <div class="container">
+                    <!-- Tabs -->
+                    <ul class="nav nav-tabs mb-4" id="dashboardTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview">
+                                Overview
+                            </button>
+                        </li>
+                        <li class="nav-item" id="bookingsTabItem" style="display: none;">
+                            <button class="nav-link" id="bookings-tab" data-bs-toggle="tab" data-bs-target="#bookings">
+                                My Bookings
+                            </button>
+                        </li>
+                        <li class="nav-item" id="propertiesTabItem" style="display: none;">
+                            <button class="nav-link" id="properties-tab" data-bs-toggle="tab" data-bs-target="#properties">
+                                My Properties
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="dashboardTabsContent">
+                        <!-- Overview Tab -->
+                        <div class="tab-pane fade show active" id="overview">
+                            <!-- Stats Cards -->
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon guest-stat">
+                                            <i class="fas fa-calendar-check fa-lg"></i>
+                                        </div>
+                                        <h3 id="bookingCount">0</h3>
+                                        <p class="text-muted mb-0">Bookings</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon host-stat">
+                                            <i class="fas fa-home fa-lg"></i>
+                                        </div>
+                                        <h3 id="propertyCount">0</h3>
+                                        <p class="text-muted mb-0">Properties</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon guest-stat">
+                                            <i class="fas fa-star fa-lg"></i>
+                                        </div>
+                                        <h3 id="ratingCount">0.0</h3>
+                                        <p class="text-muted mb-0">Rating</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="stat-card">
+                                        <div class="stat-icon host-stat">
+                                            <i class="fas fa-wallet fa-lg"></i>
+                                        </div>
+                                        <h3 id="revenueCount">Ksh 0</h3>
+                                        <p class="text-muted mb-0">Revenue</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Quick Actions -->
+                            <h5 class="mb-3">Quick Actions</h5>
+                            <div class="row mb-4" id="quickActions">
+                                <!-- Actions loaded dynamically -->
+                            </div>
+                            
+                            <!-- Recent Activity -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="properties-list">
+                                        <h5 class="mb-3">Recent Activity</h5>
+                                        <div id="recentActivity">
+                                            <p class="text-center text-muted">Loading activity...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bookings Tab (for Guests) -->
+                        <div class="tab-pane fade" id="bookings">
+                            <h4 class="mb-3">My Bookings</h4>
+                            <div id="bookingsList">
+                                <p class="text-center text-muted">You have no bookings yet.</p>
+                                <div class="text-center">
+                                    <a href="properties.html" class="btn btn-primary">Browse Properties</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Properties Tab (for Hosts) -->
+                        <div class="tab-pane fade" id="properties">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0">My Properties</h4>
+                                <button class="btn btn-primary" id="addPropertyBtn">
+                                    <i class="fas fa-plus me-2"></i>Add Property
+                                </button>
+                            </div>
+                            <div id="propertiesList">
+                                <p class="text-center text-muted">You haven't listed any properties yet.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Quick Links -->
-        <div class="card">
-            <h3><span class="card-icon">⚡</span> Quick Links</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="btn-action btn-primary" onclick="window.location.href='properties.html'">
-                    <i class="fas fa-search"></i> Browse Properties
-                </button>
-                <button class="btn-action btn-primary" onclick="window.location.href='profile.html'">
-                    <i class="fas fa-user"></i> Edit Profile
-                </button>
-                <button class="btn-action btn-primary" onclick="window.location.href='help.html'">
-                    <i class="fas fa-question-circle"></i> Help Center
-                </button>
-                <button class="btn-action btn-host host-features" onclick="manageProperties()">
-                    <i class="fas fa-cogs"></i> Manage Properties
-                </button>
-            </div>
-        </div>
-        
-        <button class="logout-btn" onclick="handleLogout()">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
     </div>
 
     <!-- Add Property Modal -->
-    <div id="addPropertyModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
-        <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto;">
-            <h2>Add New Property</h2>
-            <form id="propertyForm">
-                <div style="margin-bottom: 15px;">
-                    <label>Property Name</label>
-                    <input type="text" id="propertyName" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+    <div class="modal fade" id="addPropertyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Property</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label>Location</label>
-                    <select id="propertyLocation" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <option value="nairobi">Nairobi</option>
-                        <option value="mombasa">Mombasa</option>
-                        <option value="nakuru">Nakuru</option>
-                        <option value="kisumu">Kisumu</option>
-                        <option value="eldoret">Eldoret</option>
-                        <option value="other">Other</option>
-                    </select>
+                <div class="modal-body">
+                    <form id="addPropertyForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Property Name *</label>
+                                <input type="text" class="form-control" id="propertyName" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Property Type *</label>
+                                <select class="form-select" id="propertyType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="house">House</option>
+                                    <option value="villa">Villa</option>
+                                    <option value="cabin">Cabin</option>
+                                    <option value="safari">Safari Lodge</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Location *</label>
+                                <input type="text" class="form-control" id="propertyLocation" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City *</label>
+                                <select class="form-select" id="propertyCity" required>
+                                    <option value="">Select City</option>
+                                    <option value="nairobi">Nairobi</option>
+                                    <option value="mombasa">Mombasa</option>
+                                    <option value="nakuru">Nakuru</option>
+                                    <option value="kisumu">Kisumu</option>
+                                    <option value="eldoret">Eldoret</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Price per Night (Ksh) *</label>
+                                <input type="number" class="form-control" id="propertyPrice" min="1000" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Maximum Guests *</label>
+                                <input type="number" class="form-control" id="propertyGuests" min="1" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" id="propertyDescription" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Amenities (comma separated)</label>
+                            <input type="text" class="form-control" id="propertyAmenities" 
+                                   placeholder="WiFi, Parking, Kitchen, Pool, etc.">
+                        </div>
+                    </form>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label>Property Type</label>
-                    <select id="propertyType" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                        <option value="apartment">Apartment</option>
-                        <option value="house">House</option>
-                        <option value="villa">Villa</option>
-                        <option value="cabin">Cabin</option>
-                        <option value="safari">Safari Lodge</option>
-                        <option value="beach">Beach House</option>
-                    </select>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="savePropertyBtn">Save Property</button>
                 </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label>Price per Night (Ksh)</label>
-                    <input type="number" id="propertyPrice" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" min="1000" required>
-                </div>
-                
-                <div style="margin-bottom: 15px;">
-                    <label>Description</label>
-                    <textarea id="propertyDescription" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; height: 100px;"></textarea>
-                </div>
-                
-                <div style="display: flex; gap: 10px;">
-                    <button type="submit" style="flex: 1; padding: 12px; background: #2a9d8f; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        Save Property
-                    </button>
-                    <button type="button" onclick="closePropertyModal()" style="flex: 1; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        Cancel
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Global variables
-        let currentUser = null;
-        
-        // Check authentication
-        function checkAuth() {
-            const userData = localStorage.getItem('bnbplug_user');
-            if (!userData) {
-                showAlert('Please login to access dashboard', 'error');
-                setTimeout(() => window.location.href = 'login.html', 1500);
-                return null;
-            }
-            return JSON.parse(userData);
-        }
-        
-        // Update user display
-        function updateUserDisplay(user) {
-            currentUser = user;
-            
-            // Set avatar color and icon
-            const avatar = document.getElementById('userAvatar');
-            avatar.style.background = user.type === 'host' ? 'var(--host-color)' : 
-                                    user.isAdmin ? 'var(--admin-color)' : 'var(--guest-color)';
-            avatar.innerHTML = user.type === 'host' ? '🏠' : user.isAdmin ? '👑' : '👤';
-            
-            // Set user info
-            document.getElementById('userName').textContent = user.name;
-            document.getElementById('userEmail').textContent = user.email;
-            
-            // Set user badge
-            const badge = document.getElementById('userBadge');
-            badge.textContent = user.isAdmin ? 'Administrator' : user.type === 'host' ? 'Host' : 'Guest';
-            badge.className = `user-badge ${user.isAdmin ? 'badge-admin' : user.type === 'host' ? 'badge-host' : 'badge-guest'}`;
-            
-            // Show/hide admin link
-            if (user.isAdmin) {
-                document.getElementById('adminLink').style.display = 'inline';
-            }
-            
-            // Show/hide host features
-            if (user.type === 'host') {
-                document.querySelectorAll('.host-features').forEach(el => {
-                    el.style.display = 'block';
-                });
-                document.getElementById('hostActionBtn').style.display = 'inline-block';
-                document.getElementById('guestFavoritesCard').style.display = 'none';
-            } else {
-                document.querySelectorAll('.guest-features').forEach(el => {
-                    el.style.display = 'block';
-                });
-                document.getElementById('hostPropertiesCard').style.display = 'none';
-                document.getElementById('hostActionBtn').style.display = 'none';
-            }
-        }
-        
-        // Load dashboard data
-        function loadDashboardData() {
-            // Load bookings
-            const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
-            const userBookings = bookings.filter(b => b.userId === currentUser.id || b.userEmail === currentUser.email);
-            
-            document.getElementById('totalBookings').textContent = userBookings.length;
-            
-            // Calculate revenue
-            const totalRevenue = userBookings.reduce((sum, booking) => sum + (booking.total || 0), 0);
-            document.getElementById('totalRevenue').textContent = `Ksh ${totalRevenue.toLocaleString()}`;
-            
-            // Load properties
-            if (currentUser.type === 'host') {
-                const properties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
-                const userProperties = properties.filter(p => p.hostId === currentUser.id);
-                
-                document.getElementById('totalProperties').textContent = userProperties.length;
-                displayHostProperties(userProperties);
-            } else {
-                document.getElementById('totalProperties').textContent = '0';
-            }
-            
-            // Display recent bookings
-            displayRecentBookings(userBookings);
-        }
-        
-        // Display host properties
-        function displayHostProperties(properties) {
-            const container = document.getElementById('hostPropertiesList');
-            
-            if (properties.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">No properties listed yet</p>';
-                return;
-            }
-            
-            let html = '';
-            properties.slice(0, 5).forEach(property => {
-                html += `
-                    <div class="property-item">
-                        <div class="property-info">
-                            <h4>${property.name}</h4>
-                            <p>${property.location} • Ksh ${property.price.toLocaleString()}/night</p>
-                        </div>
-                        <span class="property-status status-${property.status || 'available'}">
-                            ${property.status || 'Available'}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        // Display recent bookings
-        function displayRecentBookings(bookings) {
-            const container = document.getElementById('recentBookings');
-            
-            if (bookings.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666;">No bookings yet</p>';
-                return;
-            }
-            
-            let html = '';
-            bookings.slice(0, 5).forEach(booking => {
-                const date = new Date(booking.date).toLocaleDateString();
-                html += `
-                    <div class="property-item">
-                        <div class="property-info">
-                            <h4>${booking.propertyName || 'Property Booking'}</h4>
-                            <p>${date} • ${booking.guests || 1} guest(s)</p>
-                        </div>
-                        <span class="property-status status-${booking.status || 'confirmed'}">
-                            ${booking.status || 'Confirmed'}
-                        </span>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        // Add property modal
-        function addProperty() {
-            document.getElementById('addPropertyModal').style.display = 'flex';
-        }
-        
-        function closePropertyModal() {
-            document.getElementById('addPropertyModal').style.display = 'none';
-            document.getElementById('propertyForm').reset();
-        }
-        
-        // Handle property form submission
-        document.getElementById('propertyForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const property = {
-                id: 'property_' + Date.now(),
-                name: document.getElementById('propertyName').value,
-                location: document.getElementById('propertyLocation').value,
-                type: document.getElementById('propertyType').value,
-                price: parseInt(document.getElementById('propertyPrice').value),
-                description: document.getElementById('propertyDescription').value,
-                hostId: currentUser.id,
-                hostName: currentUser.name,
-                status: 'available',
-                rating: 0,
-                reviews: 0,
-                created: new Date().toISOString()
-            };
-            
-            // Save property
-            const properties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
-            properties.push(property);
-            localStorage.setItem('bnbplug_properties', JSON.stringify(properties));
-            
-            // Close modal and refresh
-            closePropertyModal();
-            showAlert('Property added successfully!', 'success');
-            loadDashboardData();
-        });
-        
-        // Manage properties
-        function manageProperties() {
-            showAlert('Properties management page would open here', 'success');
-            // In production, this would open a properties management page
-        }
-        
-        // Handle logout
-        function handleLogout() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('bnbplug_user');
-                localStorage.removeItem('bnbplug_token');
-                showAlert('Logged out successfully', 'success');
-                setTimeout(() => window.location.href = 'index.html', 1000);
-            }
-        }
-        
-        // Show alert
-        function showAlert(message, type) {
-            const alertBox = document.getElementById('alertBox');
-            alertBox.textContent = message;
-            alertBox.className = `alert alert-${type}`;
-            alertBox.style.display = 'block';
-            
-            setTimeout(() => {
-                alertBox.style.display = 'none';
-            }, 5000);
-        }
-        
-        // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = checkAuth();
-            if (user) {
-                updateUserDisplay(user);
-                loadDashboardData();
-            }
-        });
-        
-        // Close modal when clicking outside
-        document.getElementById('addPropertyModal')?.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePropertyModal();
-            }
-        });
-    </script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

@@ -554,3 +554,93 @@ body {
 .card-body {
     color: #212529 !important;
 }
+
+/* Enhanced form visibility */
+input, select, textarea {
+    color: #212529 !important;
+    background-color: #ffffff !important;
+    border: 1px solid #ced4da !important;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #2a9d8f !important;
+    box-shadow: 0 0 0 0.25rem rgba(42, 157, 143, 0.25) !important;
+}
+
+/* Guest/Host differentiation */
+.guest-theme {
+    --theme-color: #4d96ff;
+    --theme-light: rgba(77, 150, 255, 0.1);
+}
+
+.host-theme {
+    --theme-color: #ff6b6b;
+    --theme-light: rgba(255, 107, 107, 0.1);
+}
+
+.admin-theme {
+    --theme-color: #ff6b6b;
+    --theme-light: rgba(255, 107, 107, 0.1);
+}
+
+/* Property cards for hosts */
+.host-property-card {
+    border-left: 4px solid var(--host-color);
+    background: white;
+}
+
+.guest-booking-card {
+    border-left: 4px solid var(--guest-color);
+    background: white;
+}
+
+/* Role badges */
+.role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-guest {
+    background: var(--guest-color);
+    color: white;
+}
+
+.badge-host {
+    background: var(--host-color);
+    color: white;
+}
+
+.badge-admin {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+}
+
+/* Ensure text is always visible */
+.card, .modal-content, .tab-content {
+    color: #212529 !important;
+    background: white !important;
+}
+
+/* Fix for dark text on inputs */
+.form-label {
+    color: #495057 !important;
+    font-weight: 500;
+}
+
+/* Booking form specific fixes */
+.booking-form input,
+.booking-form select,
+.booking-form textarea {
+    color: #212529 !important;
+    background: white !important;
+}
+
+/* Property listing form */
+.property-form input,
+.property-form select,
+.property-form textarea {
+    color: #212529 !important;
+    background: white !important;
+}

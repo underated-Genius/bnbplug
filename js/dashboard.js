@@ -1,322 +1,436 @@
-// BnBPlug Dashboard System
+// Dashboard JavaScript
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Dashboard system loaded');
+    console.log('Dashboard loaded');
     
-    // Check authentication
-    const user = checkAuthentication();
-    if (!user) return;
+    // State
+    let currentUser = null;
     
-    // Load user data
-    loadUserData(user);
+    // Initialize
+    initDashboard();
     
-    // Load user bookings
-    loadUserBookings(user);
-    
-    // Setup event listeners
-    setupEventListeners(user);
-    
-    function checkAuthentication() {
-        const userData = localStorage.getItem('bnbplug_user');
-        const token = localStorage.getItem('bnbplug_token');
+    function initDashboard() {
+        // Check authentication
+        checkAuth();
         
-        if (!userData || !token) {
-            showAlert('Please login to access the dashboard', 'error');
+        // Load user data
+        loadUserData();
+        
+        // Setup event listeners
+        setupEventListeners();
+    }
+    
+    function checkAuth() {
+        const userData = localStorage.getItem('bnbplug_user');
+        if (!userData) {
+            showMessage('Please login to access dashboard', 'error');
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 1500);
-            return null;
+            return;
         }
         
-        try {
-            return JSON.parse(userData);
-        } catch (error) {
-            console.error('Error parsing user data:', error);
-            localStorage.removeItem('bnbplug_user');
-            localStorage.removeItem('bnbplug_token');
-            window.location.href = 'login.html';
-            return null;
-        }
+        currentUser = JSON.parse(userData);
+        updateUserDisplay();
     }
     
-    function loadUserData(user) {
+    function updateUserDisplay() {
+        if (!currentUser) return;
+        
         // Update user info
-        updateElement('userName', user.name);
-        updateElement('userEmail', user.email);
-        updateElement('userType', user.type === 'host' ? 'Property Host' : 'Guest');
+        const userInfo = document.getElementById('userInfo');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const userBadge = document.getElementById('userBadge');
         
-        // Update avatar
-        const avatar = document.getElementById('userAvatar');
-        if (avatar) {
-            avatar.src = user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=2a9d8f&color=fff`;
+        if (userInfo) {
+            userInfo.innerHTML = `
+                <img src="${currentUser.avatar}" 
+                     class="rounded-circle mb-2" width="80" alt="User">
+                <h6 class="mb-1">${currentUser.name}</h6>
+                <p class="text-muted small mb-2">${currentUser.email}</p>
+            `;
         }
         
-        // Show admin badge if admin
-        if (user.isAdmin) {
-            showAdminFeatures();
+        if (welcomeMessage) {
+            welcomeMessage.textContent = `Welcome back, ${currentUser.firstName || currentUser.name.split(' ')[0]}!`;
         }
         
-        // Show host features if host
-        if (user.type === 'host') {
-            showHostFeatures();
+        if (userBadge) {
+            let badgeClass = 'guest-badge';
+            let badgeText = 'Guest';
+            
+            if (currentUser.isAdmin) {
+                badgeClass = 'admin-badge';
+                badgeText = 'Administrator';
+            } else if (currentUser.type === 'host') {
+                badgeClass = 'host-badge';
+                badgeText = 'Host';
+            }
+            
+            userBadge.innerHTML = `<span class="user-badge ${badgeClass}">${badgeText}</span>`;
+        }
+        
+        // Show/hide appropriate sections
+        updateUserSections();
+        
+        // Load user-specific data
+        loadUserSpecificData();
+    }
+    
+    function updateUserSections() {
+        const guestLinks = document.getElementById('guestLinks');
+        const hostLinks = document.getElementById('hostLinks');
+        const adminLink = document.getElementById('adminLink');
+        const bookingsTabItem = document.getElementById('bookingsTabItem');
+        const propertiesTabItem = document.getElementById('propertiesTabItem');
+        const quickActions = document.getElementById('quickActions');
+        
+        // Hide all first
+        if (guestLinks) guestLinks.style.display = 'none';
+        if (hostLinks) hostLinks.style.display = 'none';
+        if (adminLink) adminLink.style.display = 'none';
+        if (bookingsTabItem) bookingsTabItem.style.display = 'none';
+        if (propertiesTabItem) propertiesTabItem.style.display = 'none';
+        
+        // Show appropriate sections
+        if (currentUser.isAdmin) {
+            if (adminLink) adminLink.style.display = 'block';
+            loadAdminActions(quickActions);
+        } else if (currentUser.type === 'host') {
+            if (hostLinks) hostLinks.style.display = 'block';
+            if (propertiesTabItem) propertiesTabItem.style.display = 'block';
+            loadHostActions(quickActions);
+        } else {
+            if (guestLinks) guestLinks.style.display = 'block';
+            if (bookingsTabItem) bookingsTabItem.style.display = 'block';
+            loadGuestActions(quickActions);
         }
     }
     
-    function loadUserBookings(user) {
-        // Get all bookings
-        const allBookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
-        
-        // Filter user's bookings
-        const userBookings = allBookings.filter(booking => 
-            booking.userId === user.id || booking.email === user.email
-        );
-        
-        // Update booking count
-        updateElement('bookingCount', userBookings.length);
-        
-        // Calculate total spent
-        const totalSpent = userBookings.reduce((total, booking) => 
-            total + (booking.total || 0), 0
-        );
-        updateElement('totalSpent', `Ksh ${totalSpent.toLocaleString()}`);
-        
-        // Display recent bookings
-        displayRecentBookings(userBookings);
-    }
-    
-    function displayRecentBookings(bookings) {
-        const container = document.getElementById('recentBookings');
+    function loadGuestActions(container) {
         if (!container) return;
         
-        if (bookings.length === 0) {
-            container.innerHTML = `
-                <div class="text-center py-4">
-                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                    <h5>No bookings yet</h5>
-                    <p class="text-muted">Your bookings will appear here</p>
+        container.innerHTML = `
+            <div class="col-md-4">
+                <a href="properties.html" class="action-card guest-action">
+                    <div class="action-icon" style="color: #4d96ff;">🏠</div>
+                    <h5>Browse Properties</h5>
+                    <p class="text-muted">Find your perfect stay</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card guest-action" onclick="viewBookings()">
+                    <div class="action-icon" style="color: #4d96ff;">📅</div>
+                    <h5>My Bookings</h5>
+                    <p class="text-muted">View your reservations</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card guest-action" onclick="editProfile()">
+                    <div class="action-icon" style="color: #4d96ff;">👤</div>
+                    <h5>Edit Profile</h5>
+                    <p class="text-muted">Update your information</p>
+                </a>
+            </div>
+        `;
+    }
+    
+    function loadHostActions(container) {
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="col-md-4">
+                <a href="#" class="action-card host-action" data-bs-toggle="modal" data-bs-target="#addPropertyModal">
+                    <div class="action-icon" style="color: #ff6b6b;">🏠</div>
+                    <h5>Add Property</h5>
+                    <p class="text-muted">List a new property</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card host-action" onclick="viewMyProperties()">
+                    <div class="action-icon" style="color: #ff6b6b;">📋</div>
+                    <h5>My Properties</h5>
+                    <p class="text-muted">Manage your listings</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card host-action" onclick="viewHostBookings()">
+                    <div class="action-icon" style="color: #ff6b6b;">💰</div>
+                    <h5>Earnings</h5>
+                    <p class="text-muted">View your revenue</p>
+                </a>
+            </div>
+        `;
+    }
+    
+    function loadAdminActions(container) {
+        if (!container) return;
+        
+        container.innerHTML = `
+            <div class="col-md-4">
+                <a href="admin.html" class="action-card" style="border-top: 4px solid #ff6b6b;">
+                    <div class="action-icon" style="color: #ff6b6b;">⚙️</div>
+                    <h5>Admin Panel</h5>
+                    <p class="text-muted">Manage the platform</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card" style="border-top: 4px solid #4d96ff;" onclick="viewAllUsers()">
+                    <div class="action-icon" style="color: #4d96ff;">👥</div>
+                    <h5>User Management</h5>
+                    <p class="text-muted">Manage all users</p>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="#" class="action-card" style="border-top: 4px solid #2a9d8f;" onclick="viewPlatformStats()">
+                    <div class="action-icon" style="color: #2a9d8f;">📊</div>
+                    <h5>Platform Stats</h5>
+                    <p class="text-muted">View analytics</p>
+                </a>
+            </div>
+        `;
+    }
+    
+    function loadUserSpecificData() {
+        // Load bookings for guests
+        if (currentUser.type === 'guest') {
+            loadGuestBookings();
+        }
+        
+        // Load properties for hosts
+        if (currentUser.type === 'host') {
+            loadHostProperties();
+        }
+        
+        // Update stats
+        updateStats();
+    }
+    
+    function loadGuestBookings() {
+        const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
+        const userBookings = bookings.filter(b => b.userId === currentUser.id);
+        const bookingsList = document.getElementById('bookingsList');
+        
+        if (!bookingsList) return;
+        
+        if (userBookings.length === 0) {
+            bookingsList.innerHTML = `
+                <p class="text-center text-muted">You have no bookings yet.</p>
+                <div class="text-center">
                     <a href="properties.html" class="btn btn-primary">Browse Properties</a>
                 </div>
             `;
             return;
         }
         
-        // Sort by date (newest first)
-        const sortedBookings = bookings.sort((a, b) => 
-            new Date(b.date) - new Date(a.date)
-        ).slice(0, 5); // Show only 5 most recent
-        
         let html = '';
-        
-        sortedBookings.forEach(booking => {
-            const date = new Date(booking.date).toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-            
+        userBookings.forEach(booking => {
             html += `
-                <div class="booking-item mb-3 p-3 border rounded">
+                <div class="booking-item">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="mb-1">${booking.propertyName || 'Property'}</h6>
                             <p class="text-muted mb-1">
-                                <i class="fas fa-calendar-alt me-1"></i>
-                                ${booking.checkin} - ${booking.checkout}
+                                <i class="fas fa-map-marker-alt"></i> ${booking.propertyLocation || 'Location'}
                             </p>
                             <small class="text-muted">
-                                <i class="fas fa-users me-1"></i>${booking.guests || 2} guests
+                                <i class="fas fa-calendar"></i> ${booking.checkin} - ${booking.checkout}
                             </small>
                         </div>
                         <div class="text-end">
-                            <span class="badge bg-${getStatusClass(booking.status)}">
+                            <h6 class="text-primary mb-1">Ksh ${booking.total?.toLocaleString() || '0'}</h6>
+                            <span class="badge bg-${booking.status === 'confirmed' ? 'success' : 'warning'}">
                                 ${booking.status || 'pending'}
                             </span>
-                            <p class="mb-0 mt-1 fw-bold">Ksh ${booking.total?.toLocaleString() || '0'}</p>
                         </div>
                     </div>
                 </div>
             `;
         });
         
-        container.innerHTML = html;
-    }
-    
-    function getStatusClass(status) {
-        switch(status?.toLowerCase()) {
-            case 'confirmed': return 'success';
-            case 'pending': return 'warning';
-            case 'cancelled': return 'danger';
-            default: return 'secondary';
-        }
-    }
-    
-    function showAdminFeatures() {
-        // Show admin link
-        const adminLink = document.getElementById('adminLink');
-        if (adminLink) {
-            adminLink.style.display = 'block';
-        }
+        bookingsList.innerHTML = html;
         
-        // Show admin badge
-        const adminBadge = document.getElementById('adminBadge');
-        if (adminBadge) {
-            adminBadge.innerHTML = `
-                <span class="badge bg-danger">
-                    <i class="fas fa-user-shield me-1"></i>Administrator
-                </span>
-            `;
-        }
-    }
-    
-    function showHostFeatures() {
-        // Show host specific features
-        const hostSection = document.getElementById('hostSection');
-        if (hostSection) {
-            hostSection.style.display = 'block';
-        }
-        
-        // Load host properties
-        loadHostProperties();
+        // Update booking count
+        document.getElementById('bookingCount').textContent = userBookings.length;
     }
     
     function loadHostProperties() {
-        // In production, this would fetch from API
-        const properties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
+        // Get properties owned by this host
+        const allProperties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
+        const hostProperties = allProperties.filter(p => p.hostId === currentUser.id);
+        const propertiesList = document.getElementById('propertiesList');
         
-        // Filter properties by current user (as host)
-        const user = JSON.parse(localStorage.getItem('bnbplug_user'));
-        const hostProperties = properties.filter(prop => prop.hostId === user.id);
+        if (!propertiesList) return;
         
-        updateElement('propertyCount', hostProperties.length);
+        if (hostProperties.length === 0) {
+            propertiesList.innerHTML = `
+                <p class="text-center text-muted">You haven't listed any properties yet.</p>
+            `;
+            return;
+        }
         
-        // Display host properties
-        const container = document.getElementById('hostProperties');
-        if (container) {
-            if (hostProperties.length === 0) {
-                container.innerHTML = `
-                    <div class="alert alert-info">
-                        <p class="mb-2">You haven't listed any properties yet.</p>
-                        <a href="add-property.html" class="btn btn-sm btn-primary">Add Your First Property</a>
+        let html = '';
+        hostProperties.forEach(property => {
+            html += `
+                <div class="property-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${property.name}</h6>
+                            <p class="text-muted mb-1">
+                                <i class="fas fa-map-marker-alt"></i> ${property.location}, ${property.city}
+                            </p>
+                            <small class="text-muted">
+                                <i class="fas fa-user-friends"></i> ${property.guests} guests • 
+                                <i class="fas fa-bed"></i> ${property.bedrooms || 'N/A'} bedrooms
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <h6 class="text-primary mb-1">Ksh ${property.price?.toLocaleString() || '0'}/night</h6>
+                            <span class="badge bg-${property.status === 'available' ? 'success' : 'warning'}">
+                                ${property.status || 'pending'}
+                            </span>
+                        </div>
                     </div>
-                `;
-            } else {
-                // Display properties list
-            }
+                </div>
+            `;
+        });
+        
+        propertiesList.innerHTML = html;
+        
+        // Update property count
+        document.getElementById('propertyCount').textContent = hostProperties.length;
+    }
+    
+    function updateStats() {
+        // Calculate total spent for guests
+        if (currentUser.type === 'guest') {
+            const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
+            const userBookings = bookings.filter(b => b.userId === currentUser.id);
+            const totalSpent = userBookings.reduce((sum, booking) => sum + (booking.total || 0), 0);
+            
+            document.getElementById('revenueCount').textContent = `Ksh ${totalSpent.toLocaleString()}`;
+        }
+        
+        // Calculate revenue for hosts
+        if (currentUser.type === 'host') {
+            const allProperties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
+            const hostProperties = allProperties.filter(p => p.hostId === currentUser.id);
+            
+            // Simulate revenue (in real app, calculate from bookings)
+            const revenue = hostProperties.reduce((sum, property) => {
+                return sum + (property.price * (property.bookings || 0));
+            }, 0);
+            
+            document.getElementById('revenueCount').textContent = `Ksh ${revenue.toLocaleString()}`;
         }
     }
     
-    function setupEventListeners(user) {
+    function setupEventListeners() {
         // Logout button
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                handleLogout();
+            logoutBtn.addEventListener('click', handleLogout);
+        }
+        
+        // Add property button
+        const addPropertyBtn = document.getElementById('addPropertyBtn');
+        if (addPropertyBtn) {
+            addPropertyBtn.addEventListener('click', function() {
+                const modal = new bootstrap.Modal(document.getElementById('addPropertyModal'));
+                modal.show();
             });
         }
         
-        // Edit profile
-        const editProfileBtn = document.getElementById('editProfileBtn');
-        if (editProfileBtn) {
-            editProfileBtn.addEventListener('click', function() {
-                editProfile(user);
-            });
+        // Save property button
+        const savePropertyBtn = document.getElementById('savePropertyBtn');
+        if (savePropertyBtn) {
+            savePropertyBtn.addEventListener('click', saveProperty);
         }
         
-        // Quick booking
-        const quickBookBtn = document.getElementById('quickBookBtn');
-        if (quickBookBtn) {
-            quickBookBtn.addEventListener('click', function() {
-                window.location.href = 'properties.html';
+        // Tab switching
+        const tabLinks = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabLinks.forEach(link => {
+            link.addEventListener('shown.bs.tab', function() {
+                const target = this.getAttribute('data-bs-target');
+                if (target === '#bookings') {
+                    loadGuestBookings();
+                } else if (target === '#properties') {
+                    loadHostProperties();
+                }
             });
+        });
+    }
+    
+    function saveProperty() {
+        const name = document.getElementById('propertyName').value;
+        const type = document.getElementById('propertyType').value;
+        const location = document.getElementById('propertyLocation').value;
+        const city = document.getElementById('propertyCity').value;
+        const price = parseInt(document.getElementById('propertyPrice').value);
+        const guests = parseInt(document.getElementById('propertyGuests').value);
+        const description = document.getElementById('propertyDescription').value;
+        const amenities = document.getElementById('propertyAmenities').value;
+        
+        // Validation
+        if (!name || !type || !location || !city || !price || !guests) {
+            showMessage('Please fill in all required fields', 'error');
+            return;
         }
+        
+        // Create property object
+        const newProperty = {
+            id: 'property_' + Date.now(),
+            name: name,
+            type: type,
+            location: location,
+            city: city,
+            price: price,
+            guests: guests,
+            description: description,
+            amenities: amenities.split(',').map(a => a.trim()),
+            hostId: currentUser.id,
+            hostName: currentUser.name,
+            status: 'available',
+            createdAt: new Date().toISOString(),
+            bookings: 0,
+            rating: 0,
+            reviews: [],
+            images: ['https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80']
+        };
+        
+        // Save to localStorage
+        const allProperties = JSON.parse(localStorage.getItem('bnbplug_properties') || '[]');
+        allProperties.push(newProperty);
+        localStorage.setItem('bnbplug_properties', JSON.stringify(allProperties));
+        
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('addPropertyModal')).hide();
+        
+        // Show success message
+        showMessage('Property listed successfully!', 'success');
+        
+        // Refresh properties list
+        setTimeout(() => {
+            loadHostProperties();
+            document.getElementById('properties-tab').click();
+        }, 1000);
     }
     
     function handleLogout() {
         if (confirm('Are you sure you want to logout?')) {
-            // Clear session
             localStorage.removeItem('bnbplug_user');
             localStorage.removeItem('bnbplug_token');
-            
-            showAlert('Logged out successfully', 'success');
-            
+            showMessage('Logged out successfully', 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
         }
     }
     
-    function editProfile(user) {
-        // Simple profile edit modal
-        const modalHTML = `
-            <div class="modal fade" id="editProfileModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Edit Profile</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="profileForm">
-                                <div class="mb-3">
-                                    <label class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" value="${user.name}" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input type="email" class="form-control" value="${user.email}" readonly>
-                                    <small class="text-muted">Email cannot be changed</small>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" value="${user.phone || ''}">
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Add modal to page
-        const modalDiv = document.createElement('div');
-        modalDiv.innerHTML = modalHTML;
-        document.body.appendChild(modalDiv);
-        
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
-        modal.show();
-        
-        // Remove modal when hidden
-        modal._element.addEventListener('hidden.bs.modal', function() {
-            modalDiv.remove();
-        });
-    }
-    
-    function saveProfile() {
-        // In production, this would update via API
-        showAlert('Profile updated successfully', 'success');
-        
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-        modal.hide();
-    }
-    
-    function updateElement(id, content) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = content;
-        }
-    }
-    
-    function showAlert(message, type = 'info') {
-        // Create alert element
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.style.cssText = `
+    function showMessage(message, type = 'info') {
+        // Create message element
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+        messageDiv.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -324,19 +438,43 @@ document.addEventListener('DOMContentLoaded', function() {
             min-width: 300px;
         `;
         
-        alertDiv.innerHTML = `
+        messageDiv.innerHTML = `
             ${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'} 
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         
-        document.body.appendChild(alertDiv);
+        document.body.appendChild(messageDiv);
         
-        // Auto remove after 5 seconds
         setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
             }
         }, 5000);
     }
+    
+    // Global functions for action buttons
+    window.viewBookings = function() {
+        document.getElementById('bookings-tab').click();
+    };
+    
+    window.viewMyProperties = function() {
+        document.getElementById('properties-tab').click();
+    };
+    
+    window.editProfile = function() {
+        alert('Profile editing would be implemented here');
+    };
+    
+    window.viewHostBookings = function() {
+        alert('Host bookings view would be implemented here');
+    };
+    
+    window.viewAllUsers = function() {
+        window.location.href = 'admin.html#users';
+    };
+    
+    window.viewPlatformStats = function() {
+        window.location.href = 'admin.html#stats';
+    };
 });
