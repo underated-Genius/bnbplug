@@ -3,217 +3,398 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse premium BnB properties across Kenya - Nairobi, Mombasa, Nakuru, Kisumu, and more.">
     <title>Properties | BnBPlug Kenya</title>
     
-    <!-- Same head content as index.html -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+    
+    <style>
+        :root {
+            --primary: #2a9d8f;
+            --secondary: #264653;
+        }
+        
+        .property-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 25px;
+            height: 100%;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .property-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .property-content {
+            padding: 20px;
+        }
+        
+        .property-price {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .property-rating {
+            color: #ffc107;
+        }
+        
+        .login-prompt {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .filter-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 8px;
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation (same as index.html) -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-        <div class="container-fluid">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #1a2980, #26d0ce);">
+        <div class="container">
             <a class="navbar-brand" href="index.html">
-                <div class="logo-container">
-                    <div class="logo-icon">🏠</div>
-                    <div class="logo-text">
-                        <span class="logo-main">BnBPlug</span>
-                        <span class="logo-sub">Kenya</span>
-                    </div>
-                </div>
+                <i class="fas fa-home me-2"></i>BnBPlug Kenya
             </a>
-            
-            <div class="d-none d-lg-flex window-controls">
-                <button class="window-btn window-back" id="windowBack" title="Back">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
-                <button class="window-btn window-minimize" id="windowMinimize" title="Minimize">
-                    <i class="fas fa-minus"></i>
-                </button>
-                <button class="window-btn window-close" id="windowClose" title="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarContent">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">
-                            <i class="fas fa-home me-1"></i>Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="properties.html">
-                            <i class="fas fa-building me-1"></i>Properties
-                        </a>
-                    </li>
-                    <!-- Rest same as index -->
-                </ul>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">Home</a>
+                <a class="nav-link active" href="properties.html">Properties</a>
+                <a class="nav-link" href="dashboard.html">Dashboard</a>
+                <a class="nav-link" href="login.html">Login</a>
             </div>
         </div>
     </nav>
 
-    <!-- ===== PROPERTIES HEADER ===== -->
-    <section class="page-header properties-header">
-        <div class="container">
+    <!-- Properties Header -->
+    <div class="container mt-4">
+        <h1 class="mb-3">Browse Properties</h1>
+        <p class="text-muted mb-4">Find your perfect stay across Kenya</p>
+        
+        <!-- Check if user is logged in -->
+        <div id="loginPrompt" class="login-prompt" style="display: none;">
+            <h4><i class="fas fa-lock me-2"></i>Login Required</h4>
+            <p class="mb-3">Please login or register to book properties</p>
+            <a href="login.html" class="btn btn-light me-2">Login</a>
+            <a href="login.html?tab=register" class="btn btn-outline-light">Register</a>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filter-card">
             <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 fw-bold text-white mb-4">Discover Amazing Stays</h1>
-                    <p class="lead text-white mb-4">Find the perfect BnB across Kenya's top destinations</p>
-                    
-                    <!-- Search & Filters -->
-                    <div class="search-filters glassmorphism p-4">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <div class="form-floating">
-                                    <select class="form-select" id="locationFilter">
-                                        <option value="">All Locations</option>
-                                        <option value="nairobi">Nairobi</option>
-                                        <option value="mombasa">Mombasa</option>
-                                        <option value="nakuru">Nakuru</option>
-                                        <option value="kisumu">Kisumu</option>
-                                        <option value="eldoret">Eldoret</option>
-                                        <option value="malindi">Malindi</option>
-                                    </select>
-                                    <label for="locationFilter"><i class="fas fa-map-marker-alt me-2"></i>Location</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="checkinDate">
-                                    <label for="checkinDate"><i class="fas fa-calendar-day me-2"></i>Check-in</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-floating">
-                                    <input type="date" class="form-control" id="checkoutDate">
-                                    <label for="checkoutDate"><i class="fas fa-calendar-day me-2"></i>Check-out</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-floating">
-                                    <select class="form-select" id="guestsFilter">
-                                        <option value="1">1 Guest</option>
-                                        <option value="2" selected>2 Guests</option>
-                                        <option value="3">3 Guests</option>
-                                        <option value="4">4 Guests</option>
-                                        <option value="5">5+ Guests</option>
-                                    </select>
-                                    <label for="guestsFilter"><i class="fas fa-user-friends me-2"></i>Guests</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select class="form-select" id="priceFilter">
-                                        <option value="">Price Range</option>
-                                        <option value="0-5000">Under Ksh 5,000</option>
-                                        <option value="5000-10000">Ksh 5,000 - 10,000</option>
-                                        <option value="10000-20000">Ksh 10,000 - 20,000</option>
-                                        <option value="20000+">Over Ksh 20,000</option>
-                                    </select>
-                                    <label for="priceFilter"><i class="fas fa-money-bill-wave me-2"></i>Price Range</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <select class="form-select" id="typeFilter">
-                                        <option value="">All Types</option>
-                                        <option value="apartment">Apartment</option>
-                                        <option value="house">Entire House</option>
-                                        <option value="villa">Villa</option>
-                                        <option value="cabin">Cabin</option>
-                                        <option value="safari">Safari Lodge</option>
-                                        <option value="beach">Beach House</option>
-                                    </select>
-                                    <label for="typeFilter"><i class="fas fa-home me-2"></i>Property Type</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-4">
-                            <button class="btn btn-primary btn-lg px-5" id="applyFilters">
-                                <i class="fas fa-search me-2"></i>Search Properties
-                            </button>
-                            <button class="btn btn-outline-light btn-lg px-5 ms-2" id="resetFilters">
-                                <i class="fas fa-redo me-2"></i>Reset
-                            </button>
-                        </div>
-                    </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Location</label>
+                    <select class="form-select" id="locationFilter">
+                        <option value="">All Locations</option>
+                        <option value="nairobi">Nairobi</option>
+                        <option value="mombasa">Mombasa</option>
+                        <option value="nakuru">Nakuru</option>
+                        <option value="kisumu">Kisumu</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Check-in</label>
+                    <input type="date" class="form-control" id="checkinFilter">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Check-out</label>
+                    <input type="date" class="form-control" id="checkoutFilter">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Guests</label>
+                    <select class="form-select" id="guestsFilter">
+                        <option value="1">1 Guest</option>
+                        <option value="2" selected>2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4 Guests</option>
+                    </select>
                 </div>
             </div>
+            <button class="btn search-btn" onclick="searchProperties()">
+                <i class="fas fa-search me-2"></i>Search Properties
+            </button>
         </div>
-    </section>
-
-    <!-- ===== PROPERTIES GRID ===== -->
-    <section class="properties-grid py-5">
-        <div class="container">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h3 class="fw-bold"><span id="propertyCount">0</span> Properties Found</h3>
-                    <p class="text-muted">Showing available properties matching your criteria</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <div class="sort-options">
-                        <select class="form-select w-auto d-inline-block" id="sortOptions">
-                            <option value="featured">Sort: Featured</option>
-                            <option value="price_low">Price: Low to High</option>
-                            <option value="price_high">Price: High to Low</option>
-                            <option value="rating">Highest Rated</option>
-                            <option value="newest">Newest First</option>
-                        </select>
-                        <div class="btn-group ms-3" role="group">
-                            <button type="button" class="btn btn-outline-primary active" id="viewGrid">
-                                <i class="fas fa-th-large"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-primary" id="viewList">
-                                <i class="fas fa-list"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="row" id="propertiesContainer">
-                <!-- Properties loaded from XML -->
-            </div>
-            
-            <!-- Pagination -->
-            <div class="row mt-5">
-                <div class="col-12">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center" id="pagination">
-                            <!-- Dynamic pagination -->
-                        </ul>
-                    </nav>
-                </div>
-            </div>
+        
+        <!-- Properties Grid -->
+        <div class="row" id="propertiesGrid">
+            <!-- Properties will be loaded here -->
         </div>
-    </section>
-
-    <!-- Loading Indicator -->
-    <div id="loadingIndicator" class="loading-overlay">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+        
+        <!-- No Results -->
+        <div id="noResults" class="text-center py-5" style="display: none;">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4>No properties found</h4>
+            <p class="text-muted">Try adjusting your search filters</p>
         </div>
-        <p class="mt-3">Loading properties...</p>
     </div>
 
-    <!-- Footer (same as index.html) -->
-    <footer class="footer bg-dark text-white py-5">
-        <!-- Same footer as index -->
-    </footer>
-
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/properties.js"></script>
+    
+    <script>
+        // Check authentication status
+        function checkAuth() {
+            const user = localStorage.getItem('bnbplug_user');
+            const token = localStorage.getItem('bnbplug_token');
+            return !!(user && token);
+        }
+        
+        // Properties data
+        const properties = [
+            {
+                id: 1,
+                title: "Luxury Apartment in Westlands",
+                location: "Westlands, Nairobi",
+                price: 8500,
+                rating: 4.8,
+                guests: 4,
+                bedrooms: 2,
+                type: "apartment",
+                image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=600&q=80",
+                description: "Beautiful 2-bedroom apartment in the heart of Westlands"
+            },
+            {
+                id: 2,
+                title: "Beachfront Villa in Nyali",
+                location: "Nyali, Mombasa",
+                price: 12000,
+                rating: 4.9,
+                guests: 6,
+                bedrooms: 3,
+                type: "villa",
+                image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80",
+                description: "Stunning beachfront villa with private pool"
+            },
+            {
+                id: 3,
+                title: "Safari Lodge near Lake Nakuru",
+                location: "Lake Nakuru",
+                price: 15000,
+                rating: 4.7,
+                guests: 8,
+                bedrooms: 4,
+                type: "lodge",
+                image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=600&q=80",
+                description: "Experience the wild in comfort at this luxury lodge"
+            },
+            {
+                id: 4,
+                title: "Modern House with Lake Views",
+                location: "Milimani, Kisumu",
+                price: 9500,
+                rating: 4.6,
+                guests: 5,
+                bedrooms: 3,
+                type: "house",
+                image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=600&q=80",
+                description: "Beautiful modern house overlooking Lake Victoria"
+            }
+        ];
+        
+        // Load properties on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = checkAuth();
+            const loginPrompt = document.getElementById('loginPrompt');
+            
+            if (!isLoggedIn) {
+                loginPrompt.style.display = 'block';
+            }
+            
+            displayProperties(properties);
+            
+            // Set default dates
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            document.getElementById('checkinFilter').value = today;
+            document.getElementById('checkoutFilter').value = tomorrow;
+        });
+        
+        // Display properties
+        function displayProperties(propertiesList) {
+            const grid = document.getElementById('propertiesGrid');
+            const noResults = document.getElementById('noResults');
+            
+            if (propertiesList.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            let html = '';
+            const isLoggedIn = checkAuth();
+            
+            propertiesList.forEach(property => {
+                html += `
+                    <div class="col-md-6 col-lg-4 col-xl-3">
+                        <div class="property-card">
+                            <div class="property-image" style="background-image: url('${property.image}')">
+                                <span class="property-badge">${property.type}</span>
+                            </div>
+                            <div class="property-content">
+                                <h5 class="mb-2">${property.title}</h5>
+                                <p class="text-muted mb-2">
+                                    <i class="fas fa-map-marker-alt text-primary"></i> ${property.location}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        <span class="property-price">Ksh ${property.price.toLocaleString()}</span>
+                                        <small class="text-muted"> / night</small>
+                                    </div>
+                                    <div class="property-rating">
+                                        <i class="fas fa-star"></i> ${property.rating}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-user-friends me-1"></i>${property.guests}
+                                    </span>
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fas fa-bed me-1"></i>${property.bedrooms}
+                                    </span>
+                                </div>
+                                <p class="text-muted small mb-3">${property.description}</p>
+                                ${isLoggedIn ? 
+                                    `<button class="btn btn-primary w-100" onclick="bookProperty(${property.id})">
+                                        <i class="fas fa-calendar-check me-2"></i>Book Now
+                                    </button>` :
+                                    `<button class="btn btn-secondary w-100" onclick="requireLogin()">
+                                        <i class="fas fa-lock me-2"></i>Login to Book
+                                    </button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            grid.innerHTML = html;
+        }
+        
+        // Search properties
+        function searchProperties() {
+            const location = document.getElementById('locationFilter').value;
+            const guests = parseInt(document.getElementById('guestsFilter').value);
+            
+            let filtered = [...properties];
+            
+            // Filter by location
+            if (location) {
+                filtered = filtered.filter(prop => 
+                    prop.location.toLowerCase().includes(location.toLowerCase())
+                );
+            }
+            
+            // Filter by guests
+            filtered = filtered.filter(prop => prop.guests >= guests);
+            
+            displayProperties(filtered);
+        }
+        
+        // Book property
+        function bookProperty(propertyId) {
+            const property = properties.find(p => p.id === propertyId);
+            if (!property) return;
+            
+            // Get dates
+            const checkin = document.getElementById('checkinFilter').value;
+            const checkout = document.getElementById('checkoutFilter').value;
+            const guests = document.getElementById('guestsFilter').value;
+            
+            if (!checkin || !checkout) {
+                alert('Please select check-in and check-out dates');
+                return;
+            }
+            
+            // Calculate total (price * nights)
+            const nights = Math.ceil(
+                (new Date(checkout) - new Date(checkin)) / (1000 * 60 * 60 * 24)
+            );
+            
+            if (nights <= 0) {
+                alert('Check-out date must be after check-in date');
+                return;
+            }
+            
+            const total = property.price * nights;
+            
+            // Create booking object
+            const user = JSON.parse(localStorage.getItem('bnbplug_user'));
+            const booking = {
+                id: 'booking_' + Date.now(),
+                userId: user.id,
+                email: user.email,
+                propertyId: property.id,
+                propertyName: property.title,
+                propertyLocation: property.location,
+                checkin: checkin,
+                checkout: checkout,
+                guests: parseInt(guests),
+                nights: nights,
+                pricePerNight: property.price,
+                total: total,
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+            
+            // Save booking
+            const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
+            bookings.push(booking);
+            localStorage.setItem('bnbplug_bookings', JSON.stringify(bookings));
+            
+            // Show success message
+            alert(`✅ Booking successful!\n\nProperty: ${property.title}\nDates: ${checkin} to ${checkout}\nTotal: Ksh ${total.toLocaleString()}\n\nYou can view your booking in the Dashboard.`);
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+        
+        // Require login
+        function requireLogin() {
+            document.getElementById('loginPrompt').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
 </body>
 </html>

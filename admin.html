@@ -1,479 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | BnBPlug Kenya</title>
-    
-    <!-- Same includes -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <!-- Admin specific CSS -->
+    <title>Admin Panel | BnBPlug</title>
     <style>
-        .admin-container {
-            min-height: 100vh;
-            background: #f5f7fa;
-        }
-        
-        .admin-sidebar {
-            background: white;
-            border-right: 1px solid #e9ecef;
-            min-height: calc(100vh - 76px);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .admin-content {
-            padding: 2rem;
-            min-height: calc(100vh - 76px);
-        }
-        
-        .admin-nav-link {
-            padding: 0.75rem 1.5rem;
-            color: #495057;
-            border-left: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-        
-        .admin-nav-link:hover, .admin-nav-link.active {
-            background: #f8f9fa;
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-        }
-        
-        .stat-card-admin {
-            background: white;
-            border-radius: 10px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .data-table {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .table th {
-            border-top: none;
-            background: #f8f9fa;
-        }
-        
-        .btn-admin {
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-        }
-        
-        .modal-xl-custom {
-            max-width: 90%;
-        }
-        
-        .property-image-preview {
-            width: 100px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
+        body { font-family: Arial; padding: 20px; }
+        .alert { padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .btn { background: #2a9d8f; color: white; padding: 10px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 5px; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
+    <h1>🏠 BnBPlug Admin Panel</h1>
+    
+    <div id="authCheck">
+        <p>Checking admin access...</p>
+    </div>
+    
+    <div id="adminContent" style="display: none;">
+        <h2>Welcome, Administrator!</h2>
+        
+        <div class="alert alert-success">
+            ✅ You have full admin access to manage the platform.
+        </div>
+        
+        <h3>Quick Actions:</h3>
+        <div>
+            <a href="#" class="btn" onclick="manageProperties()">📋 Manage Properties</a>
+            <a href="#" class="btn" onclick="viewBookings()">📊 View All Bookings</a>
+            <a href="#" class="btn" onclick="manageUsers()">👥 Manage Users</a>
+            <a href="dashboard.html" class="btn">📱 User Dashboard</a>
+        </div>
+        
+        <div id="adminResults" style="margin-top: 20px;"></div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <a href="index.html">← Back to Home</a> | 
+        <a href="dashboard.html">Go to Dashboard</a>
+    </div>
 
-    <!-- Admin Container -->
-    <div class="container-fluid admin-container">
-        <div class="row">
-            <!-- Admin Sidebar -->
-            <div class="col-lg-2 admin-sidebar d-none d-lg-block">
-                <div class="sticky-top" style="top: 90px; padding-top: 2rem;">
-                    <!-- Admin Profile -->
-                    <div class="text-center mb-4">
-                        <div class="avatar-admin mb-3">
-                            <i class="fas fa-user-shield fa-3x text-primary"></i>
-                        </div>
-                        <h6 class="mb-1">Administrator</h6>
-                        <small class="text-muted">Super Admin Access</small>
+    <script>
+        // Check if user is admin
+        function checkAdmin() {
+            const userData = localStorage.getItem('bnbplug_user');
+            if (!userData) {
+                document.getElementById('authCheck').innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ Access denied. Please login as admin.
                     </div>
-                    
-                    <!-- Admin Navigation -->
-                    <nav class="nav flex-column">
-                        <a class="admin-nav-link active" href="#dashboard">
-                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                        </a>
-                        <a class="admin-nav-link" href="#properties">
-                            <i class="fas fa-home me-2"></i>Properties
-                            <span class="badge bg-primary float-end">42</span>
-                        </a>
-                        <a class="admin-nav-link" href="#bookings">
-                            <i class="fas fa-calendar-check me-2"></i>Bookings
-                            <span class="badge bg-success float-end">18</span>
-                        </a>
-                        <a class="admin-nav-link" href="#users">
-                            <i class="fas fa-users me-2"></i>Users
-                            <span class="badge bg-info float-end">156</span>
-                        </a>
-                        <a class="admin-nav-link" href="#hosts">
-                            <i class="fas fa-user-tie me-2"></i>Hosts
-                            <span class="badge bg-warning float-end">24</span>
-                        </a>
-                        <a class="admin-nav-link" href="#reviews">
-                            <i class="fas fa-star me-2"></i>Reviews
-                        </a>
-                        <a class="admin-nav-link" href="#payments">
-                            <i class="fas fa-credit-card me-2"></i>Payments
-                        </a>
-                        <hr class="my-3">
-                        <a class="admin-nav-link" href="#settings">
-                            <i class="fas fa-cog me-2"></i>Settings
-                        </a>
-                        <a class="admin-nav-link" href="#reports">
-                            <i class="fas fa-chart-bar me-2"></i>Reports
-                        </a>
-                        <a class="admin-nav-link text-danger" href="#logout">
-                            <i class="fas fa-sign-out-alt me-2"></i>Logout
-                        </a>
-                    </nav>
-                </div>
-            </div>
+                    <p><a href="login.html" class="btn">Login as Admin</a></p>
+                `;
+                return false;
+            }
             
-            <!-- Mobile Admin Toggle -->
-            <div class="d-lg-none">
-                <button class="btn btn-primary m-3" type="button" data-bs-toggle="offcanvas" 
-                        data-bs-target="#adminMobileSidebar">
-                    <i class="fas fa-cogs me-2"></i>Admin Menu
-                </button>
-            </div>
-
-            <!-- Admin Content -->
-            <div class="col-lg-10 admin-content">
-                <!-- Admin Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div>
-                        <h3 class="mb-1">Admin Dashboard</h3>
-                        <p class="text-muted mb-0">Manage your BnBPlug platform</p>
+            const user = JSON.parse(userData);
+            if (!user.isAdmin) {
+                document.getElementById('authCheck').innerHTML = `
+                    <div class="alert alert-error">
+                        ❌ Admin access required. Your account is not an admin.
                     </div>
-                    <div>
-                        <button class="btn btn-primary" data-bs-toggle="modal" 
-                                data-bs-target="#addPropertyModal">
-                            <i class="fas fa-plus me-2"></i>Add Property
-                        </button>
-                    </div>
+                    <p><a href="dashboard.html" class="btn">Go to Dashboard</a></p>
+                `;
+                return false;
+            }
+            
+            document.getElementById('authCheck').innerHTML = `
+                <div class="alert alert-success">
+                    ✅ Admin access verified: ${user.email}
                 </div>
-                
-                <!-- Admin Stats -->
-                <div class="row g-4 mb-4">
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card-admin">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h3 class="mb-0">42</h3>
-                                    <p class="text-muted mb-0">Total Properties</p>
-                                </div>
-                                <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-home fa-2x text-primary"></i>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <small class="text-success">
-                                    <i class="fas fa-arrow-up me-1"></i>12% increase
-                                </small>
-                            </div>
-                        </div>
+            `;
+            document.getElementById('adminContent').style.display = 'block';
+            return true;
+        }
+        
+        // Admin functions
+        function manageProperties() {
+            document.getElementById('adminResults').innerHTML = `
+                <h4>Properties Management</h4>
+                <p>Total Properties: 3</p>
+                <ul>
+                    <li>Nairobi Luxury Apartment (Active)</li>
+                    <li>Mombasa Beach House (Active)</li>
+                    <li>Nakuru Safari Lodge (Active)</li>
+                </ul>
+                <button class="btn" onclick="addProperty()">➕ Add New Property</button>
+            `;
+        }
+        
+        function viewBookings() {
+            const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
+            document.getElementById('adminResults').innerHTML = `
+                <h4>All Bookings</h4>
+                <p>Total Bookings: ${bookings.length}</p>
+                ${bookings.map(booking => `
+                    <div style="border: 1px solid #ddd; padding: 10px; margin: 5px 0;">
+                        <strong>${booking.name}</strong><br>
+                        ${booking.checkin} to ${booking.checkout}<br>
+                        ${booking.guests} guests • Ksh ${booking.total}
                     </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card-admin">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h3 class="mb-0">Ksh 425K</h3>
-                                    <p class="text-muted mb-0">Revenue</p>
-                                </div>
-                                <div class="bg-success bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-money-bill-wave fa-2x text-success"></i>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <small class="text-success">
-                                    <i class="fas fa-arrow-up me-1"></i>24% increase
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card-admin">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h3 class="mb-0">156</h3>
-                                    <p class="text-muted mb-0">Total Users</p>
-                                </div>
-                                <div class="bg-info bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-users fa-2x text-info"></i>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <small class="text-success">
-                                    <i class="fas fa-arrow-up me-1"></i>8% increase
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-md-6">
-                        <div class="stat-card-admin">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h3 class="mb-0">18</h3>
-                                    <p class="text-muted mb-0">Active Bookings</p>
-                                </div>
-                                <div class="bg-warning bg-opacity-10 p-3 rounded">
-                                    <i class="fas fa-calendar-check fa-2x text-warning"></i>
-                                </div>
-                            </div>
-                            <div class="mt-3">
-                                <small class="text-danger">
-                                    <i class="fas fa-arrow-down me-1"></i>4% decrease
-                                </small>
-                            </div>
-                        </div>
-                    </div>
+                `).join('')}
+            `;
+        }
+        
+        function manageUsers() {
+            document.getElementById('adminResults').innerHTML = `
+                <h4>Users Management</h4>
+                <p>Total Users: 2</p>
+                <ul>
+                    <li>admin@bnbplug.co.ke (Administrator)</li>
+                    <li>user@example.com (Guest)</li>
+                </ul>
+            `;
+        }
+        
+        function addProperty() {
+            document.getElementById('adminResults').innerHTML += `
+                <div style="background: #f8f9fa; padding: 15px; margin-top: 10px;">
+                    <h5>Add New Property</h5>
+                    <input type="text" placeholder="Property Name" id="propName"><br>
+                    <input type="text" placeholder="Location" id="propLocation"><br>
+                    <input type="number" placeholder="Price" id="propPrice"><br>
+                    <button class="btn" onclick="saveProperty()">Save Property</button>
                 </div>
-                
-                <!-- Properties Management -->
-                <div class="card mb-4">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Properties Management</h5>
-                        <div>
-                            <button class="btn btn-sm btn-outline-primary me-2" 
-                                    data-bs-toggle="modal" data-bs-target="#importPropertiesModal">
-                                <i class="fas fa-file-import me-1"></i>Import
-                            </button>
-                            <button class="btn btn-sm btn-outline-primary" 
-                                    data-bs-toggle="modal" data-bs-target="#exportPropertiesModal">
-                                <i class="fas fa-file-export me-1"></i>Export
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <!-- Properties Table -->
-                        <div class="data-table">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                <input type="checkbox" class="form-check-input" id="selectAll">
-                                            </th>
-                                            <th>Property</th>
-                                            <th>Location</th>
-                                            <th>Type</th>
-                                            <th>Price</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="adminPropertiesTable">
-                                        <!-- Properties loaded from XML -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <!-- Bulk Actions -->
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <div class="bulk-actions">
-                                <select class="form-select form-select-sm w-auto d-inline-block me-2">
-                                    <option>Bulk Actions</option>
-                                    <option>Approve Selected</option>
-                                    <option>Reject Selected</option>
-                                    <option>Delete Selected</option>
-                                </select>
-                                <button class="btn btn-sm btn-primary">Apply</button>
-                            </div>
-                            <div>
-                                <nav>
-                                    <ul class="pagination pagination-sm mb-0">
-                                        <li class="page-item disabled">
-                                            <a class="page-link" href="#">Previous</a>
-                                        </li>
-                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                        <li class="page-item">
-                                            <a class="page-link" href="#">Next</a>
-                                        </li>
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Recent Bookings -->
-                <div class="row">
-                    <div class="col-lg-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">Recent Bookings</h5>
-                            </div>
-                            <div class="card-body">
-                                <!-- Bookings table -->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="mb-0">Quick Stats</h5>
-                            </div>
-                            <div class="card-body">
-                                <!-- Stats -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Add Property Modal -->
-    <div class="modal fade" id="addPropertyModal" tabindex="-1">
-        <div class="modal-dialog modal-xl-custom modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add New Property</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addPropertyForm">
-                        <!-- Basic Information -->
-                        <h6 class="mb-3">Basic Information</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label">Property Title *</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Property Type *</label>
-                                <select class="form-select" required>
-                                    <option value="">Select Type</option>
-                                    <option value="apartment">Apartment</option>
-                                    <option value="house">Entire House</option>
-                                    <option value="villa">Villa</option>
-                                    <option value="cabin">Cabin</option>
-                                    <option value="safari">Safari Lodge</option>
-                                    <option value="beach">Beach House</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Location *</label>
-                                <select class="form-select" required>
-                                    <option value="">Select Location</option>
-                                    <option value="nairobi">Nairobi</option>
-                                    <option value="mombasa">Mombasa</option>
-                                    <option value="nakuru">Nakuru</option>
-                                    <option value="kisumu">Kisumu</option>
-                                    <option value="eldoret">Eldoret</option>
-                                    <option value="malindi">Malindi</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Address *</label>
-                                <input type="text" class="form-control" required>
-                            </div>
-                        </div>
-                        
-                        <!-- Pricing -->
-                        <h6 class="mb-3">Pricing</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <label class="form-label">Price per Night (Ksh) *</label>
-                                <input type="number" class="form-control" min="1000" step="500" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Cleaning Fee (Ksh)</label>
-                                <input type="number" class="form-control" min="0" value="1500">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Service Fee (Ksh)</label>
-                                <input type="number" class="form-control" min="0" value="1000">
-                            </div>
-                        </div>
-                        
-                        <!-- Capacity -->
-                        <h6 class="mb-3">Capacity</h6>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label">Guests *</label>
-                                <input type="number" class="form-control" min="1" max="20" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Bedrooms</label>
-                                <input type="number" class="form-control" min="1" max="10">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Beds</label>
-                                <input type="number" class="form-control" min="1" max="20">
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Bathrooms</label>
-                                <input type="number" class="form-control" min="1" max="10">
-                            </div>
-                        </div>
-                        
-                        <!-- Amenities -->
-                        <h6 class="mb-3">Amenities</h6>
-                        <div class="row g-3 mb-4">
-                            <!-- Amenities checkboxes -->
-                        </div>
-                        
-                        <!-- Images -->
-                        <h6 class="mb-3">Property Images</h6>
-                        <div class="mb-4">
-                            <div class="dropzone p-5 text-center border rounded">
-                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                <h5>Drop images here or click to upload</h5>
-                                <p class="text-muted">Upload up to 10 images (max 5MB each)</p>
-                                <input type="file" class="d-none" id="propertyImages" multiple accept="image/*">
-                            </div>
-                        </div>
-                        
-                        <!-- Description -->
-                        <h6 class="mb-3">Description</h6>
-                        <div class="mb-4">
-                            <textarea class="form-control" rows="5" placeholder="Describe your property..."></textarea>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveProperty">Save Property</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit Property Modal -->
-    <div class="modal fade" id="editPropertyModal" tabindex="-1">
-        <!-- Similar to add property modal -->
-    </div>
-
-    <!-- Mobile Admin Sidebar -->
-    <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="adminMobileSidebar">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title">Admin Menu</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body">
-            <!-- Mobile admin menu -->
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer bg-dark text-white py-4">
-        <!-- Same footer -->
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/admin.js"></script>
+            `;
+        }
+        
+        function saveProperty() {
+            alert('Property saved! (This would connect to backend in production)');
+        }
+        
+        // Check admin on page load
+        document.addEventListener('DOMContentLoaded', checkAdmin);
+    </script>
 </body>
 </html>

@@ -1,341 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Booking | BnBPlug Kenya</title>
-    
-    <!-- Same includes -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    
-    <!-- Booking specific CSS -->
+    <title>Booking | BnBPlug</title>
     <style>
-        .booking-step {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow-md);
-            opacity: 0.5;
-            transition: all 0.3s ease;
-        }
-        
-        .booking-step.active {
-            opacity: 1;
-            border-left: 4px solid var(--primary-color);
-        }
-        
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            position: relative;
-            margin: 3rem 0;
-        }
-        
-        .step-indicator::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #e9ecef;
-            z-index: 1;
-        }
-        
-        .step {
-            position: relative;
-            z-index: 2;
-            background: white;
-            padding: 0 1rem;
-        }
-        
-        .step-circle {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #e9ecef;
-            color: #6c757d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 0.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .step.active .step-circle {
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        .payment-method {
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .payment-method:hover {
-            border-color: var(--primary-color);
-        }
-        
-        .payment-method.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(42, 157, 143, 0.05);
-        }
-        
-        .security-badge {
-            background: linear-gradient(135deg, #2a9d8f, #264653);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-align: center;
-        }
+        body { font-family: Arial; padding: 20px; max-width: 600px; margin: 0 auto; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .btn { background: #2a9d8f; color: white; padding: 12px; border: none; border-radius: 5px; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-
-    <!-- Booking Process -->
-    <div class="container mt-5 pt-5">
-        <div class="row">
-            <div class="col-lg-8">
-                <!-- Booking Steps -->
-                <div class="step-indicator">
-                    <div class="step active" data-step="1">
-                        <div class="step-circle">1</div>
-                        <small>Your Details</small>
-                    </div>
-                    <div class="step" data-step="2">
-                        <div class="step-circle">2</div>
-                        <small>Payment</small>
-                    </div>
-                    <div class="step" data-step="3">
-                        <div class="step-circle">3</div>
-                        <small>Confirmation</small>
-                    </div>
-                </div>
-
-                <!-- Step 1: Personal Details -->
-                <div class="booking-step active" id="step1">
-                    <h4 class="mb-4">Your Details</h4>
-                    
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">First Name *</label>
-                            <input type="text" class="form-control" id="firstName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Last Name *</label>
-                            <input type="text" class="form-control" id="lastName" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Email *</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Phone Number *</label>
-                            <input type="tel" class="form-control" id="phone" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Special Requests (Optional)</label>
-                            <textarea class="form-control" id="specialRequests" rows="3"></textarea>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <button class="btn btn-primary" id="nextToPayment">Continue to Payment</button>
-                    </div>
-                </div>
-
-                <!-- Step 2: Payment -->
-                <div class="booking-step" id="step2" style="display: none;">
-                    <h4 class="mb-4">Payment Method</h4>
-                    
-                    <!-- Payment Options -->
-                    <div class="payment-method" data-method="mpesa">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" value="mpesa">
-                            <label class="form-check-label d-flex align-items-center">
-                                <div class="me-3">
-                                    <i class="fas fa-mobile-alt fa-2x text-success"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">M-Pesa</h6>
-                                    <small class="text-muted">Pay via M-Pesa (Kenya)</small>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-method" data-method="card">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" value="card">
-                            <label class="form-check-label d-flex align-items-center">
-                                <div class="me-3">
-                                    <i class="fas fa-credit-card fa-2x text-primary"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Credit/Debit Card</h6>
-                                    <small class="text-muted">Visa, MasterCard, American Express</small>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <!-- Card Details (Hidden by default) -->
-                    <div class="card-details mt-4" id="cardDetails" style="display: none;">
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label">Card Number</label>
-                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Expiry Date</label>
-                                <input type="text" class="form-control" placeholder="MM/YY">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">CVV</label>
-                                <input type="text" class="form-control" placeholder="123">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- M-Pesa Details (Hidden by default) -->
-                    <div class="mpesa-details mt-4" id="mpesaDetails" style="display: none;">
-                        <div class="alert alert-info">
-                            <p class="mb-2"><strong>How to pay with M-Pesa:</strong></p>
-                            <ol class="mb-0">
-                                <li>Enter your M-Pesa number below</li>
-                                <li>You'll receive a payment request on your phone</li>
-                                <li>Enter your M-Pesa PIN to complete payment</li>
-                            </ol>
-                        </div>
-                        <div class="form-floating">
-                            <input type="tel" class="form-control" placeholder="07XX XXX XXX" id="mpesaNumber">
-                            <label>M-Pesa Phone Number</label>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4">
-                        <button class="btn btn-outline-secondary" id="backToDetails">Back</button>
-                        <button class="btn btn-primary" id="confirmPayment">Confirm Payment</button>
-                    </div>
-                </div>
-
-                <!-- Step 3: Confirmation -->
-                <div class="booking-step" id="step3" style="display: none;">
-                    <div class="text-center py-5">
-                        <div class="mb-4">
-                            <i class="fas fa-check-circle fa-4x text-success"></i>
-                        </div>
-                        <h3 class="mb-3">Booking Confirmed!</h3>
-                        <p class="lead mb-4">Your booking has been successfully processed.</p>
-                        <div class="booking-details p-4 bg-light rounded mb-4">
-                            <h5 class="mb-3">Booking Details</h5>
-                            <div class="row text-start">
-                                <div class="col-md-6">
-                                    <p><strong>Booking ID:</strong> <span id="bookingId">BP-2024-001</span></p>
-                                    <p><strong>Property:</strong> <span id="bookingProperty">Loading...</span></p>
-                                    <p><strong>Dates:</strong> <span id="bookingDates">Loading...</span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Guests:</strong> <span id="bookingGuests">2</span></p>
-                                    <p><strong>Total Paid:</strong> <span id="bookingTotal">Ksh 0</span></p>
-                                    <p><strong>Status:</strong> <span class="badge bg-success">Confirmed</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="alert alert-success">
-                            <i class="fas fa-envelope me-2"></i>
-                            A confirmation email has been sent to your email address.
-                        </div>
-                        <div class="mt-4">
-                            <a href="dashboard.html" class="btn btn-primary me-3">
-                                <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
-                            </a>
-                            <a href="index.html" class="btn btn-outline-primary">
-                                <i class="fas fa-home me-2"></i>Return Home
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Booking Summary -->
-            <div class="col-lg-4">
-                <div class="sticky-top" style="top: 90px;">
-                    <!-- Property Summary -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="card-title mb-3">Booking Summary</h5>
-                            <div class="property-summary d-flex mb-3">
-                                <img src="https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=100&q=80" 
-                                     class="rounded me-3" width="80" height="80" alt="Property">
-                                <div>
-                                    <h6 id="summaryProperty">Loading...</h6>
-                                    <small class="text-muted" id="summaryLocation">Location</small>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="price-details">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Ksh <span id="summaryNightly">0</span> x <span id="summaryNights">0</span> nights</span>
-                                    <span id="summarySubtotal">Ksh 0</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Cleaning fee</span>
-                                    <span id="summaryCleaning">Ksh 1,500</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span>Service fee</span>
-                                    <span id="summaryService">Ksh 1,000</span>
-                                </div>
-                                <hr>
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span>Total</span>
-                                    <span class="text-primary" id="summaryTotal">Ksh 0</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Badge -->
-                    <div class="security-badge">
-                        <i class="fas fa-shield-alt fa-3x mb-3"></i>
-                        <h5 class="mb-3">Secure Booking</h5>
-                        <p class="mb-0">Your payment and personal information are always protected with 256-bit SSL encryption.</p>
-                    </div>
-
-                    <!-- Help -->
-                    <div class="card mt-4">
-                        <div class="card-body">
-                            <h6 class="card-title mb-3">Need Help?</h6>
-                            <p class="mb-2">
-                                <i class="fas fa-phone me-2 text-primary"></i>
-                                +254 700 000 000
-                            </p>
-                            <p class="mb-0">
-                                <i class="fas fa-envelope me-2 text-primary"></i>
-                                support@bnbplug.co.ke
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <h1>Book Your Stay</h1>
+    
+    <form id="bookingForm">
+        <label>Full Name:</label>
+        <input type="text" id="name" required>
+        
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        
+        <label>Check-in Date:</label>
+        <input type="date" id="checkin" required>
+        
+        <label>Check-out Date:</label>
+        <input type="date" id="checkout" required>
+        
+        <label>Number of Guests:</label>
+        <select id="guests">
+            <option>1</option>
+            <option selected>2</option>
+            <option>3</option>
+            <option>4</option>
+        </select>
+        
+        <button type="submit" class="btn">Complete Booking</button>
+    </form>
+    
+    <div id="message" style="margin-top: 20px; padding: 10px; display: none;"></div>
+    
+    <div style="margin-top: 20px;">
+        <a href="properties.html">← Back to Properties</a>
     </div>
 
-    <!-- Footer -->
-    <footer class="footer bg-dark text-white py-5 mt-5">
-        <!-- Same footer -->
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/booking.js"></script>
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const booking = {
+                id: 'booking_' + Date.now(),
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                checkin: document.getElementById('checkin').value,
+                checkout: document.getElementById('checkout').value,
+                guests: document.getElementById('guests').value,
+                total: 8500,
+                date: new Date().toISOString()
+            };
+            
+            // Save to localStorage
+            const bookings = JSON.parse(localStorage.getItem('bnbplug_bookings') || '[]');
+            bookings.push(booking);
+            localStorage.setItem('bnbplug_bookings', JSON.stringify(bookings));
+            
+            // Show success message
+            document.getElementById('message').innerHTML = `
+                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px;">
+                    ✅ Booking successful!<br>
+                    Booking ID: ${booking.id}<br>
+                    Total: Ksh ${booking.total}
+                </div>
+                <p><a href="dashboard.html">View your bookings in Dashboard</a></p>
+            `;
+            document.getElementById('message').style.display = 'block';
+            
+            // Reset form
+            document.getElementById('bookingForm').reset();
+        });
+        
+        // Set default dates
+        const today = new Date().toISOString().split('T')[0];
+        const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+        document.getElementById('checkin').value = today;
+        document.getElementById('checkout').value = tomorrow;
+        document.getElementById('checkin').min = today;
+        document.getElementById('checkout').min = tomorrow;
+    </script>
 </body>
 </html>
